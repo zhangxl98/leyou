@@ -1,9 +1,10 @@
 package com.leyou.item.controller;
 
+import com.leyou.common.enums.ExceptionEnum;
+import com.leyou.common.exception.LyException;
 import com.leyou.item.service.ItemService;
 import com.leyou.pojo.Item;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +29,7 @@ public class ItemController {
     public ResponseEntity<Item> saveItem(Item item) {
         // 如果价格为空，则抛出异常
         if (item.getPrice() == null) {
-            throw new RuntimeException("价格不能为空");
+            throw new LyException(ExceptionEnum.PRICE_CANNOT_BE_NULL);
         }
         Item result = itemService.saveItem(item);
 

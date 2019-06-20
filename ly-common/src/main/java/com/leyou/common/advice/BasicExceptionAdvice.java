@@ -1,5 +1,7 @@
 package com.leyou.common.advice;
 
+import com.leyou.common.exception.LyException;
+import com.leyou.common.pojo.ExceptionResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class BasicExceptionAdvice {
 
+    @ExceptionHandler(LyException.class)
+    public ResponseEntity<ExceptionResult> handleLyException(LyException e) {
+        return ResponseEntity.status(e.getStatus()).body(new ExceptionResult(e));
+    }
+
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleException(RuntimeException e) {
-        // 返回状态码 400，从异常中提取提示信息
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
+        // 服务器异常，返回状态码 500，从异常中提取提示信息
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 }
