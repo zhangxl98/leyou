@@ -1,0 +1,31 @@
+server:
+  port: 10010
+spring:
+  application:
+    name: api-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:10086/eureka
+zuul:
+  # 添加路由前缀
+  prefix: /api
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            # 熔断超时时长：6000 ms
+            timeoutInMilliseconds: 6000
+ribbon:
+  # ribbon 链接超时时长
+  ConnectTimeout: 500
+  # ribbon 读取超时时长
+  ReadTimeout: 2000
+  # 当前服务重试次数
+  MaxAutoRetries: 0
+  # 切换服务重试次数
+  MaxAutoRetriesNextServer: 1
+  # 是否对所有的请求方式都重试，只对 get 请求重试
+  OkToRetryOnAllOperations: false
