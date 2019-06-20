@@ -10,6 +10,9 @@ eureka:
 zuul:
   # 添加路由前缀
   prefix: /api
+  routes:
+    # 将商品服务映射到 /item/**
+    item-service: /item/**
 hystrix:
   command:
     default:
