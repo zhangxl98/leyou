@@ -26,12 +26,12 @@ public class ItemController {
 
     @PostMapping("item")
     public ResponseEntity<Item> saveItem(Item item) {
-        // 如果价格为空，则抛出异常，返回 400 状态码，请求参数有误
+        // 如果价格为空，则抛出异常
         if (item.getPrice() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            throw new RuntimeException("价格不能为空");
         }
         Item result = itemService.saveItem(item);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.ok(result);
     }
 }
