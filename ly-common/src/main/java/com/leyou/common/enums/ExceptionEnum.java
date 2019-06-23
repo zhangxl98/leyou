@@ -15,7 +15,7 @@ import lombok.Getter;
 @Getter
 public enum ExceptionEnum {
 
-    PRICE_CANNOT_BE_NULL(400, "价格不能为空！");
+    PRICE_CANNOT_BE_NULL(400, "价格不能为空！"), CATEGORY_NOT_FOND(404, "父类目找不到！"), DATA_TRANSFER_ERROR(500, "数据转换出错！");
 
     private int status;
 
