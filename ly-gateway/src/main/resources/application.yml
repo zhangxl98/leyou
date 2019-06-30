@@ -41,7 +41,7 @@ ly:
     allowedOrigins:
       - http://manage.leyou.com
       # 开发阶段，方便测试，添加 localhost
-      - http://localhost
+      - http://localhost:9001
       - http://127.0.0.1:9001
     # 是否发送 cookie 信息
     allowCredentials: true
