@@ -12,6 +12,7 @@ import com.leyou.item.pojo.Brand;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -75,5 +76,26 @@ public class BrandService {
         List<BrandDTO> list = BeanHelper.copyWithCollection(brands, BrandDTO.class);
 
         return new PageResult<>(brandPageInfo.getTotal(), list);
+    }
+
+    /**
+     * 新增品牌
+     * <pre>createTime:
+     * 6/30/19 5:07 PM</pre>
+     *
+     * @param brandDTO brand 对象
+     * @param cids     商品分类 id 数组
+     */
+    public void saveBrand(BrandDTO brandDTO, List<Long> cids) {
+
+        // 将 BrandDTO 转化为 Brand 对象
+        Brand brand = BeanHelper.copyProperties(brandDTO, Brand.class);
+
+        // 保存品牌
+        int i = brandMapper.insertSelective(brand);
+
+        // 维护中间表
+        int count = brandMapper.insertCategoryBrand(brand.getId(), cids);
+        System.out.println("count = " + count);
     }
 }

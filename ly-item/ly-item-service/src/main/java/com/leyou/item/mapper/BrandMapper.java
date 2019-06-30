@@ -1,7 +1,10 @@
 package com.leyou.item.mapper;
 
 import com.leyou.item.pojo.Brand;
+import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,4 +17,15 @@ import tk.mybatis.mapper.common.Mapper;
  * @Description 品牌通用 mapper 接口
  */
 public interface BrandMapper extends Mapper<Brand> {
+
+    /**
+     * 维护中间表
+     * <pre>createTime:
+     * 6/30/19 6:48 PM</pre>
+     *
+     * @param bid  品牌 id
+     * @param cids 商品分类 id 数组
+     * @return 数据库变更条数
+     */
+    int insertCategoryBrand(@Param("bid") Long bid, @Param("cids") List<Long> cids);
 }

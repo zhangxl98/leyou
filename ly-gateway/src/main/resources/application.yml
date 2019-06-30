@@ -25,7 +25,9 @@ ribbon:
   # ribbon 链接超时时长
   ConnectTimeout: 500
   # ribbon 读取超时时长
-  ReadTimeout: 2000
+  #  ReadTimeout: 2000
+  # 开发环境方便测试，修改为 30 秒
+  ReadTimeout: 30000
   # 当前服务重试次数
   MaxAutoRetries: 0
   # 切换服务重试次数
