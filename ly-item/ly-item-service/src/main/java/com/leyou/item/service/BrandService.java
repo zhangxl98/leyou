@@ -86,16 +86,22 @@ public class BrandService {
      * @param brandDTO brand 对象
      * @param cids     商品分类 id 数组
      */
+    @Transactional
     public void saveBrand(BrandDTO brandDTO, List<Long> cids) {
 
         // 将 BrandDTO 转化为 Brand 对象
         Brand brand = BeanHelper.copyProperties(brandDTO, Brand.class);
 
         // 保存品牌
-        int i = brandMapper.insertSelective(brand);
+        int count = brandMapper.insertSelective(brand);
+        if (count!=1){
+            throw  new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
 
         // 维护中间表
-        int count = brandMapper.insertCategoryBrand(brand.getId(), cids);
-        System.out.println("count = " + count);
+        count = brandMapper.insertCategoryBrand(brand.getId(), cids);
+        if (count!=cids.size()){
+            throw  new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
     }
 }
