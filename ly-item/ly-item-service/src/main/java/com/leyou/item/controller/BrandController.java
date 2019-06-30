@@ -1,8 +1,8 @@
 package com.leyou.item.controller;
 
 import com.leyou.common.vo.PageResult;
+import com.leyou.dto.BrandDTO;
 import com.leyou.item.service.BrandService;
-import com.leyou.pojo.dto.BrandDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

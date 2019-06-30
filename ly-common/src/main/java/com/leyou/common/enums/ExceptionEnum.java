@@ -16,16 +16,16 @@ import lombok.Getter;
 public enum ExceptionEnum {
 
     PRICE_CANNOT_BE_NULL(400, "价格不能为空！"),
-    CATEGORY_NOT_FOND(404, "父类目找不到！"),
-    DATA_TRANSFER_ERROR(500, "数据转换出错！"),
-    BRAND_NOT_FOUND(404, "品牌不存在");
+    CATEGORY_NOT_FOND(204, "父类目找不到！"),
+    DATA_TRANSFER_ERROR(500, "数据转换异常！"),
+    BRAND_NOT_FOUND(204, "品牌不存在！");
 
     private int status;
 
-    private String maeesge;
+    private String message;
 
-    ExceptionEnum(int status, String maeesge) {
+    ExceptionEnum(int status, String message) {
         this.status = status;
-        this.maeesge = maeesge;
+        this.message = message;
     }
 }

@@ -1,7 +1,7 @@
 package com.leyou.item.controller;
 
+import com.leyou.dto.CategoryDTO;
 import com.leyou.item.service.CategoryService;
-import com.leyou.pojo.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,7 +36,7 @@ public class CategoryController {
      * @param pid 父类目 id
      * @return
      */
-    @GetMapping("/list")
+    @GetMapping("/of/parent")
     public ResponseEntity<List<CategoryDTO>> queryByParentId(@RequestParam(value = "pid", defaultValue = "0") Long pid) {
         return ResponseEntity.ok(this.categoryService.queryByParentId(pid));
     }

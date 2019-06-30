@@ -1,7 +1,7 @@
 package com.leyou.common.advice;
 
+import com.leyou.common.exception.ExceptionResult;
 import com.leyou.common.exception.LyException;
-import com.leyou.common.pojo.ExceptionResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

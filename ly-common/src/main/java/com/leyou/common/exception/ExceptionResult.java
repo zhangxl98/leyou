@@ -1,6 +1,5 @@
-package com.leyou.common.pojo;
+package com.leyou.common.exception;
 
-import com.leyou.common.exception.LyException;
 import lombok.Getter;
 import org.joda.time.DateTime;
 

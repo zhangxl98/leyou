@@ -22,12 +22,12 @@ public class LyException extends RuntimeException {
     private int status;
 
     public LyException(ExceptionEnum em) {
-        super(em.getMaeesge());
+        super(em.getMessage());
         this.status = em.getStatus();
     }
 
     public LyException(ExceptionEnum em, Throwable cause) {
-        super(em.getMaeesge(), cause);
+        super(em.getMessage(), cause);
         this.status = em.getStatus();
     }
 }

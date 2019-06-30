@@ -16,3 +16,17 @@ buildNumber.properties
 .mvn
 out/
 
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### Visual Studio Code ###
+.vscode
+
+dist/
+node_modules/
+
+
+*.log

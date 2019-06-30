@@ -1,37 +1,28 @@
-package com.leyou.item.entity;
+package com.leyou.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tk.mybatis.mapper.annotation.KeySql;
-
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
  *
  * @Author zhangxl98
- * @Date 6/23/19 3:53 PM
+ * @Date 6/23/19 4:08 PM
  * @OS Ubuntu 18.04 LTS
  * @Device ASRock-Desktop
  * @Version V1.0.0
- * @Description 分类实体类
+ * @Description 分类转移对象
  */
-@Table(name="tb_category")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Category {
-
+public class CategoryDTO {
     /**
      * 类目 id
      */
-    @Id
-    @KeySql(useGeneratedKeys = true)
     private Long id;
 
     /**
@@ -53,14 +44,4 @@ public class Category {
      * 排序指数，越小越靠前
      */
     private Integer sort;
-
-    /**
-     * 数据创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 数据更新时间
-     */
-    private Date updateTime;
 }

@@ -6,9 +6,9 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
-import com.leyou.item.entity.Brand;
+import com.leyou.dto.BrandDTO;
 import com.leyou.item.mapper.BrandMapper;
-import com.leyou.pojo.dto.BrandDTO;
+import com.leyou.item.pojo.Brand;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class BrandService {
         Example example = new Example(Brand.class);
 
         if (StringUtils.isNoneBlank(key)) {
-            example.createCriteria().orLike("key", "%" + key + "%").orEqualTo("letter", key.toUpperCase());
+            example.createCriteria().orLike("name", "%" + key + "%").orEqualTo("letter", key.toUpperCase());
         }
 
         if (StringUtils.isNoneBlank(sortBy)) {
