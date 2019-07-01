@@ -1,9 +1,14 @@
 package com.leyou.upload.service;
 
+import com.aliyun.oss.OSS;
+import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.model.MatchMode;
+import com.aliyun.oss.model.PolicyConditions;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.upload.client.FastDFSClient;
 import com.leyou.upload.config.FileServerUrlProperties;
+import com.leyou.upload.config.OSSProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -11,6 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,7 +40,13 @@ public class UploadService {
     private FastDFSClient fastDFSClient;
 
     @Autowired
-    private FileServerUrlProperties properties;
+    private FileServerUrlProperties fastDFSUrlProperties;
+
+    @Autowired
+    private OSSProperties ossProperties;
+
+    @Autowired
+    private OSS ossClient;
 
     /**
      * 图片上传
@@ -51,10 +66,47 @@ public class UploadService {
             // 上传图片
             String path = fastDFSClient.uploadFile(file.getBytes(), file.getSize(), fileExtName);
             // 拼接成完整的图片路径
-            log.info("Image : {}", properties.getUrl() + path);
-            return properties.getUrl() + path;
+            log.info("Image : {}", fastDFSUrlProperties.getUrl() + path);
+            return fastDFSUrlProperties.getUrl() + path;
         } catch (IOException e) {
             // 上传失败，抛出异常
+            throw new LyException(ExceptionEnum.FILE_UPLOAD_ERROR);
+        }
+    }
+
+    /**
+     * 利用 OSS 上传图片
+     * <pre>createTime:
+     * 7/1/19 11:08 AM</pre>
+     *
+     * @return
+     */
+    public Map<String,Object> getSignature() {
+
+        try {
+            long expireEndTime = System.currentTimeMillis() + ossProperties.getExpireTime() * 1000;
+
+            Date expiration = new Date(expireEndTime);
+            PolicyConditions policyConds = new PolicyConditions();
+            policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, ossProperties.getMaxFileSize());
+            policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, ossProperties.getDir());
+
+            String postPolicy = ossClient.generatePostPolicy(expiration, policyConds);
+            byte[] binaryData = postPolicy.getBytes("utf-8");
+            String encodedPolicy = BinaryUtil.toBase64String(binaryData);
+            String postSignature = ossClient.calculatePostSignature(postPolicy);
+
+            Map<String, Object> respMap = new LinkedHashMap<>();
+
+            respMap.put("accessId",ossProperties.getAccessKeyId());
+            respMap.put("dir",ossProperties.getDir());
+            respMap.put("host",ossProperties.getHost());
+            respMap.put("expire",expireEndTime);
+            respMap.put("policy", encodedPolicy);
+            respMap.put("signature", postSignature);
+
+            return respMap;
+        } catch (Exception e) {
             throw new LyException(ExceptionEnum.FILE_UPLOAD_ERROR);
         }
     }

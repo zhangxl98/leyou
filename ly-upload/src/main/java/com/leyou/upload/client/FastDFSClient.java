@@ -24,9 +24,6 @@ public class FastDFSClient {
     @Autowired
     private DefaultFastFileStorageClient storageClient;
 
-    @Autowired
-    private ThumbImageConfig thumbImageConfig;
-
     /**
      * 文件上传的方法
      * <pre>createTime:

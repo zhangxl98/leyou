@@ -34,6 +34,13 @@
             <version>1.26.1-RELEASE</version>
         </dependency>
 
+        <!-- 阿里云对象存储 -->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.4.2</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.leyou</groupId>
             <artifactId>ly-common</artifactId>
