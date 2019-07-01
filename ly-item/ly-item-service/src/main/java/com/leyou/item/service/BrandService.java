@@ -86,7 +86,7 @@ public class BrandService {
      * @param brandDTO brand 对象
      * @param cids     商品分类 id 数组
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveBrand(BrandDTO brandDTO, List<Long> cids) {
 
         // 将 BrandDTO 转化为 Brand 对象
@@ -94,14 +94,47 @@ public class BrandService {
 
         // 保存品牌
         int count = brandMapper.insertSelective(brand);
-        if (count!=1){
-            throw  new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        if (count != 1) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
         }
 
         // 维护中间表
         count = brandMapper.insertCategoryBrand(brand.getId(), cids);
-        if (count!=cids.size()){
-            throw  new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        if (count != cids.size()) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     * 修改品牌
+     * <pre>createTime:
+     * 7/1/19 4:46 PM</pre>
+     *
+     * @param brandDTO brand 对象
+     * @param cids     商品分类 id 数组
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateBrand(BrandDTO brandDTO, List<Long> cids) {
+
+        // 将 BrandDTO 转化为 Brand 对象
+        Brand brand = BeanHelper.copyProperties(brandDTO, Brand.class);
+
+        // 修改品牌
+        int count = brandMapper.updateByPrimaryKeySelective(brand);
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+
+        // 删除中间表原有的数据
+        count = brandMapper.deleteCategoryBrandBy(brand.getId());
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+
+        // 重新插入中间表
+        count = brandMapper.insertCategoryBrand(brand.getId(), cids);
+        if (count != cids.size()) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
         }
     }
 }

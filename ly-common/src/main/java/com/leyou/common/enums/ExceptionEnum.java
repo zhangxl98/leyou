@@ -20,7 +20,8 @@ public enum ExceptionEnum {
     DATA_TRANSFER_ERROR(500, "数据转换异常"),
     BRAND_NOT_FOUND(204, "品牌不存在"),
     INSERT_OPERATION_FAIL(500, "新增失败"),
-    FILE_UPLOAD_ERROR(500,"文件上传失败");
+    FILE_UPLOAD_ERROR(500, "文件上传失败"),
+    UPDATE_OPERATION_FAIL(500, "数据修改失败");
 
     private int status;
 

@@ -28,4 +28,15 @@ public interface BrandMapper extends Mapper<Brand> {
      * @return 数据库变更条数
      */
     int insertCategoryBrand(@Param("bid") Long bid, @Param("cids") List<Long> cids);
+
+
+    /**
+     * 删除中间表
+     * <pre>createTime:
+     * 7/1/19 4:57 PM</pre>
+     *
+     * @param bid 品牌 id
+     * @return 数据库变更条数
+     */
+    int deleteCategoryBrandBy(@Param("bid") Long bid);
 }

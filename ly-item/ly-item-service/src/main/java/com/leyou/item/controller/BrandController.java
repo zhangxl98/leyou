@@ -57,12 +57,27 @@ public class BrandController {
      *
      * @param brandDTO brand 对象
      * @param cids     商品分类 id 数组
-     * @return
+     * @return 状态码
      */
     @PostMapping
-    public ResponseEntity saveBrand(BrandDTO brandDTO, @RequestParam("cids") List<Long> cids) {
+    public ResponseEntity<Void> saveBrand(BrandDTO brandDTO, @RequestParam("cids") List<Long> cids) {
 
         brandService.saveBrand(brandDTO, cids);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    /**
+     * 修改品牌
+     * <pre>createTime:
+     * 7/1/19 4:42 PM</pre>
+     *
+     * @param brandDTO brand 对象
+     * @param cids     商品分类 id 数组
+     * @return 状态码
+     */
+    @PutMapping
+    public ResponseEntity<Void> updateBrand(BrandDTO brandDTO, @RequestParam("cids") List<Long> cids) {
+        brandService.updateBrand(brandDTO, cids);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
