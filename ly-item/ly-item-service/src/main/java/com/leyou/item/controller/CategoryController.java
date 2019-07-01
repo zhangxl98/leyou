@@ -40,4 +40,17 @@ public class CategoryController {
     public ResponseEntity<List<CategoryDTO>> queryByParentId(@RequestParam(value = "pid", defaultValue = "0") Long pid) {
         return ResponseEntity.ok(this.categoryService.queryByParentId(pid));
     }
+
+    /**
+     * 根据品牌 id 返回类目信息
+     * <pre>createTime:
+     * 7/1/19 4:12 PM</pre>
+     *
+     * @param brandId 品牌 id
+     * @return 分类集合
+     */
+    @GetMapping("/of/brand")
+    public ResponseEntity<List<CategoryDTO>> queryByBrandId(@RequestParam("id") Long brandId) {
+        return ResponseEntity.ok(categoryService.queryByBrandId(brandId));
+    }
 }

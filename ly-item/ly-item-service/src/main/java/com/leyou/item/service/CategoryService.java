@@ -30,6 +30,7 @@ public class CategoryService {
 
     /**
      * 根据父节点，返回商品类目
+     *
      * @param pid 父类目 id
      * @return
      */
@@ -45,6 +46,25 @@ public class CategoryService {
         }
 
         // 使用自定义工具类，把 Category 集合转换为 DTO 的集合
-        return BeanHelper.copyWithCollection(categoryList,CategoryDTO.class);
+        return BeanHelper.copyWithCollection(categoryList, CategoryDTO.class);
+    }
+
+    /**
+     * 根据品牌 id 返回类目数据
+     * <pre>createTime:
+     * 7/1/19 4:21 PM</pre>
+     *
+     * @param brandId 品牌 id
+     * @return 分类集合
+     */
+    public List<CategoryDTO> queryByBrandId(Long brandId) {
+
+        List<Category> categoryList = categoryMapper.queryByBrandId(brandId);
+
+        if (CollectionUtils.isEmpty(categoryList)) {
+            throw new LyException(ExceptionEnum.CATEGORY_NOT_FOND);
+        }
+        return BeanHelper.copyWithCollection(categoryList, CategoryDTO.class);
+
     }
 }
