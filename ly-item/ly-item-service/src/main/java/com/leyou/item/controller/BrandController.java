@@ -55,7 +55,7 @@ public class BrandController {
      * <pre>createTime:
      * 6/30/19 5:06 PM</pre>
      *
-     * @param brandDTO brand 对象
+     * @param brandDTO 品牌对象
      * @param cids     商品分类 id 数组
      * @return 状态码
      */
@@ -71,13 +71,27 @@ public class BrandController {
      * <pre>createTime:
      * 7/1/19 4:42 PM</pre>
      *
-     * @param brandDTO brand 对象
+     * @param brandDTO 品牌对象
      * @param cids     商品分类 id 数组
      * @return 状态码
      */
     @PutMapping
     public ResponseEntity<Void> updateBrand(BrandDTO brandDTO, @RequestParam("cids") List<Long> cids) {
         brandService.updateBrand(brandDTO, cids);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 删除品牌
+     * <pre>createTime:
+     * 7/1/19 6:54 PM</pre>
+     *
+     * @param bid 品牌 id
+     * @return 状态码
+     */
+    @DeleteMapping
+    public ResponseEntity<Void> deleteBrand(@RequestParam("bid") Long bid) {
+        brandService.deleteBrand(bid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

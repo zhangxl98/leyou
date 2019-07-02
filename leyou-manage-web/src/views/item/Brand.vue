@@ -29,7 +29,7 @@
           <v-btn icon @click="editBrand(props.item)">
             <i class="el-icon-edit"/>
           </v-btn>
-          <v-btn icon @click="deleteBrand(props.item)">
+          <v-btn icon @click="deleteBrandId = props.item.id" @click.native.stop="deleteDialog = true">
             <i class="el-icon-delete"/>
           </v-btn>
         </td>
@@ -42,6 +42,21 @@
     <v-dialog max-width="500" v-model="show" persistent scrollable>
       <brand-form @close="closeWindow" :oldBrand="oldBrand" :isEdit="isEdit"/>
     </v-dialog>
+
+    <v-layout row justify-center>
+    <v-dialog v-model="deleteDialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">是否删除</v-card-title>
+        <v-card-text>点击否，取消删除<br>点击是，确认删除</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="green darken-1" flat="flat" @click.native="deleteDialog = false">否</v-btn>
+          <v-btn color="amber darken-1" flat="flat" @click.native="deleteBrand">是</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-layout>
+
   </v-card>
 </template>
 
@@ -68,6 +83,8 @@
         show: false,// 控制对话框的显示
         oldBrand: {}, // 即将被编辑的品牌数据
         isEdit: false, // 是否是编辑
+        deleteDialog: false, // 控制删除确认对话框的显示
+        deleteBrandId: '', // 要被删除的品牌 id
       }
     },
     mounted() { // 渲染后执行
@@ -127,6 +144,21 @@
             // 回显商品分类
             this.oldBrand.categories = data;
           })
+      },
+      deleteBrand(){
+        this.$http.delete("/item/brand?bid=" + this.deleteBrandId).then(() => {
+          // 关闭确认框
+          this.deleteDialog = false
+          // 删除成功，输出提示信息
+          this.$message.success('删除成功')
+          // 重新加载数据
+          this.getDataFromServer()
+        }).catch(() => {
+          // 关闭确认框
+          this.deleteDialog = false
+          // 删除失败，输出提示信息
+          this.$message.success('删除失败')
+        })
       },
       closeWindow(){
         // 重新加载数据

@@ -83,7 +83,7 @@ public class BrandService {
      * <pre>createTime:
      * 6/30/19 5:07 PM</pre>
      *
-     * @param brandDTO brand 对象
+     * @param brandDTO 品牌对象
      * @param cids     商品分类 id 数组
      */
     @Transactional(rollbackFor = Exception.class)
@@ -110,7 +110,7 @@ public class BrandService {
      * <pre>createTime:
      * 7/1/19 4:46 PM</pre>
      *
-     * @param brandDTO brand 对象
+     * @param brandDTO 品牌对象
      * @param cids     商品分类 id 数组
      */
     @Transactional(rollbackFor = Exception.class)
@@ -135,6 +135,32 @@ public class BrandService {
         count = brandMapper.insertCategoryBrand(brand.getId(), cids);
         if (count != cids.size()) {
             throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     * 删除品牌
+     * <pre>createTime:
+     * 7/1/19 6:57 PM</pre>
+     *
+     * @param bid 品牌 id
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteBrand(Long bid) {
+
+        // 构建品牌对象
+        Brand brand = Brand.builder().id(bid).build();
+
+        // 删除品牌
+        int count = brandMapper.deleteByPrimaryKey(brand);
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+
+        // 删除中间表数据
+        count = brandMapper.deleteCategoryBrandBy(brand.getId());
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
     }
 }
