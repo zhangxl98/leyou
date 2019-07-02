@@ -40,7 +40,7 @@ public class SpecService {
      * 7/2/19 5:21 PM</pre>
      *
      * @param cid 分类 Id
-     * @return
+     * @return 规格组集合
      */
     public List<SpecGroupDTO> querySpecGroupByCategoryId(Long cid) {
 
@@ -55,12 +55,57 @@ public class SpecService {
     }
 
     /**
+     * 保存规格组
+     * <pre>createTime:
+     * 7/2/19 7:16 PM</pre>
+     *
+     * @param specGroupDTO 规格组信息
+     */
+    public void saveSpecGroup(SpecGroupDTO specGroupDTO) {
+
+        // 保存
+        if (1 != specGroupMapper.insertSelective(BeanHelper.copyProperties(specGroupDTO, SpecGroup.class))) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     * 修改规格组
+     * <pre>createTime:
+     * 7/2/19 7:26 PM</pre>
+     *
+     * @param specGroupDTO 规格组信息
+     */
+    public void updateSpecGroup(SpecGroupDTO specGroupDTO) {
+
+        // 修改
+        if (1 != specGroupMapper.updateByPrimaryKeySelective(BeanHelper.copyProperties(specGroupDTO, SpecGroup.class))) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     * 删除规格组
+     * <pre>createTime:
+     * 7/2/19 7:33 PM</pre>
+     *
+     * @param gid 规格组 Id
+     */
+    public void deleteSpecGroup(Long gid) {
+
+        // 删除
+        if (1 != specGroupMapper.deleteByPrimaryKey(gid)) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+    }
+
+    /**
      * 返回规格参数信息
      * <pre>createTime:
      * 7/2/19 6:45 PM</pre>
      *
      * @param gid 规格组 Id
-     * @return
+     * @return 规格参数集合
      */
     public List<SpecParamDTO> querySpecParamBySpecGroupId(Long gid) {
 
@@ -72,5 +117,50 @@ public class SpecService {
         }
 
         return BeanHelper.copyWithCollection(specParamList, SpecParamDTO.class);
+    }
+
+    /**
+     * 新增规格参数
+     * <pre>createTime:
+     * 7/2/19 7:52 PM</pre>
+     *
+     * @param specParamDTO 规格参数信息
+     */
+    public void saveSpecParamBySpecGroupId(SpecParamDTO specParamDTO) {
+
+        // 保存
+        if (1 != specParamMapper.insertSelective(BeanHelper.copyProperties(specParamDTO, SpecParam.class))) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     * 修改规格参数
+     * <pre>createTime:
+     * 7/2/19 7:53 PM</pre>
+     *
+     * @param specParamDTO 规格参数信息
+     */
+    public void updateSpecParamBySpecGroupId(SpecParamDTO specParamDTO) {
+
+        // 修改
+        if (1 != specParamMapper.updateByPrimaryKeySelective(BeanHelper.copyProperties(specParamDTO, SpecParam.class))) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+    }
+
+    /**
+     * 删除规格组
+     * <pre>createTime:
+     * 7/2/19 7:56 PM</pre>
+     *
+     * @param pid 规格组 Id
+     */
+    public void deleteSpecParamBySpecGroupId(Long pid) {
+
+        // 删除
+        if (1 != specParamMapper.deleteByPrimaryKey(pid)) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
     }
 }
