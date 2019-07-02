@@ -16,7 +16,7 @@ import java.util.List;
  * @Version V1.0.0
  * @Description 分类通用 mapper 接口
  */
-public interface CategoryMapper extends Mapper<Category> {
+public interface CategoryMapper extends BaseMapper<Category> {
 
     /**
      * 根据品牌 id 查询类目数据

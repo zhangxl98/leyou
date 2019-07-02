@@ -44,7 +44,7 @@ public class BrandService {
      * @param key    搜索关键字
      * @param sortBy 排序字段
      * @param desc   是否为降序
-     * @return
+     * @return 分页数据集合
      */
     public PageResult<BrandDTO> queryBrandByPage(Integer page, Integer rows, String key, String sortBy, Boolean desc) {
 
@@ -162,5 +162,25 @@ public class BrandService {
         if (1 != count) {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
+    }
+
+    /**
+     * 返回品牌数据
+     * <pre>createTime:
+     * 7/2/19 9:26 PM</pre>
+     *
+     * @param id 品牌 id
+     * @return 品牌数据
+     */
+    public BrandDTO queryById(Long id) {
+
+        // 查询
+        Brand brand = brandMapper.selectByPrimaryKey(id);
+
+        if (null == brand) {
+            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
+        }
+
+        return BeanHelper.copyProperties(brand, BrandDTO.class);
     }
 }

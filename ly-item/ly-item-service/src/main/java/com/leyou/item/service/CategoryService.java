@@ -41,7 +41,7 @@ public class CategoryService {
 
         // 判断结果
         if (CollectionUtils.isEmpty(categoryList)) {
-            // 未查到数据，返回 404
+            // 未查到数据，返回 204
             throw new LyException(ExceptionEnum.CATEGORY_NOT_FOND);
         }
 
@@ -66,5 +66,25 @@ public class CategoryService {
         }
         return BeanHelper.copyWithCollection(categoryList, CategoryDTO.class);
 
+    }
+
+    /**
+     * 返回类目数据
+     * <pre>createTime:
+     * 7/2/19 9:26 PM</pre>
+     *
+     * @param ids 类目 id 列表
+     * @return 类目数据
+     */
+    public List<CategoryDTO> queryByIds(List<Long> ids) {
+
+        // 查询
+        List<Category> categoryList = categoryMapper.selectByIdList(ids);
+
+        if (CollectionUtils.isEmpty(categoryList)) {
+            throw new LyException(ExceptionEnum.CATEGORY_NOT_FOND);
+        }
+
+        return BeanHelper.copyWithCollection(categoryList, CategoryDTO.class);
     }
 }
