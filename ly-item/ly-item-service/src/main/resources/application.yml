@@ -21,6 +21,10 @@ mybatis:
     map-underscore-to-camel-case: true
   mapper-locations: mapper/*.xml
 
+# 解决 SQL 关键字冲突
+mapper:
+  wrap-keyword: "`{0}`"
+
 logging:
   level:
     com.leyou: debug

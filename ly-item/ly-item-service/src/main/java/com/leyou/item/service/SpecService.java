@@ -4,8 +4,11 @@ import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.dto.SpecGroupDTO;
+import com.leyou.dto.SpecParamDTO;
 import com.leyou.item.mapper.SpecGroupMapper;
+import com.leyou.item.mapper.SpecParamMapper;
 import com.leyou.item.pojo.SpecGroup;
+import com.leyou.item.pojo.SpecParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -28,6 +31,9 @@ public class SpecService {
     @Autowired
     private SpecGroupMapper specGroupMapper;
 
+    @Autowired
+    private SpecParamMapper specParamMapper;
+
     /**
      * 返回规格组信息
      * <pre>createTime:
@@ -36,15 +42,35 @@ public class SpecService {
      * @param cid 分类 Id
      * @return
      */
-    public List<SpecGroupDTO> queryByCategoryId(Long cid) {
+    public List<SpecGroupDTO> querySpecGroupByCategoryId(Long cid) {
 
         // 根据分类获取规格组
-        List<SpecGroup> groupList = specGroupMapper.select(SpecGroup.builder().cid(cid).build());
+        List<SpecGroup> specGroupList = specGroupMapper.select(SpecGroup.builder().cid(cid).build());
 
-        if (CollectionUtils.isEmpty(groupList)) {
-            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
+        if (CollectionUtils.isEmpty(specGroupList)) {
+            throw new LyException(ExceptionEnum.SPEC_NOT_FOND);
         }
 
-        return BeanHelper.copyWithCollection(groupList, SpecGroupDTO.class);
+        return BeanHelper.copyWithCollection(specGroupList, SpecGroupDTO.class);
+    }
+
+    /**
+     * 返回规格参数信息
+     * <pre>createTime:
+     * 7/2/19 6:45 PM</pre>
+     *
+     * @param gid 规格组 Id
+     * @return
+     */
+    public List<SpecParamDTO> querySpecParamBySpecGroupId(Long gid) {
+
+        // 根据规格组获取规格参数
+        List<SpecParam> specParamList = specParamMapper.select(SpecParam.builder().groupId(gid).build());
+
+        if (CollectionUtils.isEmpty(specParamList)) {
+            throw new LyException(ExceptionEnum.SPEC_NOT_FOND);
+        }
+
+        return BeanHelper.copyWithCollection(specParamList, SpecParamDTO.class);
     }
 }
