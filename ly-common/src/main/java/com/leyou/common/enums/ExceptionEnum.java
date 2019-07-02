@@ -22,7 +22,8 @@ public enum ExceptionEnum {
     FILE_UPLOAD_ERROR(500, "文件上传失败"),
     INSERT_OPERATION_FAIL(500, "数据新增失败"),
     UPDATE_OPERATION_FAIL(500, "数据修改失败"),
-    DELETE_OPERATION_FAIL(500, "数据删除失败");
+    DELETE_OPERATION_FAIL(500, "数据删除失败"),
+    INVALID_FILE_TYPE(500, "文件类型错误");
 
     private int status;
 

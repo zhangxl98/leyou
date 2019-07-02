@@ -4,7 +4,7 @@
     <v-card>
       <!-- 卡片的头部 -->
       <v-card-title>
-        <v-btn color="primary">新增</v-btn>
+        <v-btn color="primary" @click="addBrand()">新增</v-btn>
         <!-- 空间隔离组件 -->
         <v-spacer />
         <v-text-field label="输入关键字搜索" v-model="search" append-icon="search" hide-details />
@@ -29,12 +29,21 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <!-- 品牌编辑弹窗 -->
+    <v-dialog v-model="dialog" width="500" persistent>
+      <brand-form @close="closeWindow"></brand-form>
+    </v-dialog>
   </div>
 </template>
 
 <script>
+  import BrandForm from "./BrandForm"
   export default {
     name: 'my-brand',
+    components: {
+      BrandForm
+    },
     data() {
       return {
         // 总条数
@@ -47,6 +56,8 @@
         pagination: {},
         // 搜索框内容
         search: '',
+        // 控制品牌编辑弹窗的显示
+        dialog: false,
         //  表头
         headers: [{
             text: 'id',
@@ -105,17 +116,23 @@
           // 进度条停止加载
           this.loading = false
         })
-      }
+      },
+      closeWindow() {
+        this.dialog = false
+      },
+      addBrand() {
+        this.dialog = true
+      },
     },
-    watch:{
-      pagination:{
-        deep:true,
-        handler(){
+    watch: {
+      pagination: {
+        deep: true,
+        handler() {
           this.getDataFromServer()
         }
       },
-      search:{
-        handler(){
+      search: {
+        handler() {
           this.getDataFromServer()
         }
       }

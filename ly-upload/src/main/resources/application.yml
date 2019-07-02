@@ -30,12 +30,16 @@ file-server:
 # OSS
 ly:
   oss:
-    accessKeyId:  # 填上自己的 accessKeyId
-    accessKeySecret: # 填上自己的 accessKeySecret
+    # 填上自己的 accessKeyId
+    accessKeyId: LTAID13FA8uCV
+    # 填上自己的 accessKeySecret
+    accessKeySecret: CgWgVzbulWQ2fagXvScAmYBniQL
     # 访问 oss 的域名，bucket + endpoint
-    host: # 填上自己的 oss 域名
+    # 填上自己的 oss 域名
+    host: http://ly-images.oss-cn-shanghai.aliyuncs.com
     # 服务的端点
-    endpoint: # 填上自己的服务端点
+    # 填上自己的服务端点
+    endpoint: oss-cn-shanghai.aliyuncs.com
     # 保存到bucket的某个子目录
     dir: ""
     # 过期时间，单位是 S

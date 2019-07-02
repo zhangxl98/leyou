@@ -15,11 +15,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,6 +34,11 @@ import java.util.Map;
 @EnableConfigurationProperties(FileServerUrlProperties.class)
 @Slf4j
 public class UploadService {
+
+    /**
+     * 支持的文件类型
+     */
+    private static final List<String> SUFFIXES = Arrays.asList("image/png", "image/jpeg", "image/bmp");
 
     @Autowired
     private FastDFSClient fastDFSClient;
@@ -57,6 +61,22 @@ public class UploadService {
      * @return 返回图片路径
      */
     public String uploadImage(MultipartFile file) {
+
+        // 验证上传的文件类型
+        if (!SUFFIXES.contains(file.getContentType())) {
+            throw new LyException(ExceptionEnum.INVALID_FILE_TYPE);
+        }
+
+        // 验证文件内容
+        BufferedImage read;
+        try {
+            read = ImageIO.read(file.getInputStream());
+        } catch (IOException e) {
+            throw new LyException(ExceptionEnum.INVALID_FILE_TYPE);
+        }
+        if (null == read) {
+            throw new LyException(ExceptionEnum.INVALID_FILE_TYPE);
+        }
 
         // 获取文件扩展名
         String originalFilename = file.getOriginalFilename();
@@ -81,7 +101,7 @@ public class UploadService {
      *
      * @return
      */
-    public Map<String,Object> getSignature() {
+    public Map<String, Object> getSignature() {
 
         try {
             long expireEndTime = System.currentTimeMillis() + ossProperties.getExpireTime() * 1000;
@@ -98,10 +118,10 @@ public class UploadService {
 
             Map<String, Object> respMap = new LinkedHashMap<>();
 
-            respMap.put("accessId",ossProperties.getAccessKeyId());
-            respMap.put("dir",ossProperties.getDir());
-            respMap.put("host",ossProperties.getHost());
-            respMap.put("expire",expireEndTime);
+            respMap.put("accessId", ossProperties.getAccessKeyId());
+            respMap.put("dir", ossProperties.getDir());
+            respMap.put("host", ossProperties.getHost());
+            respMap.put("expire", expireEndTime);
             respMap.put("policy", encodedPolicy);
             respMap.put("signature", postSignature);
 
