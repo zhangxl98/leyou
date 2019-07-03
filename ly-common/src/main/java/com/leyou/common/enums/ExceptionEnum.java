@@ -26,7 +26,9 @@ public enum ExceptionEnum {
     DELETE_OPERATION_FAIL(500, "数据删除失败"),
     INVALID_FILE_TYPE(500, "文件类型错误"),
     GOODS_NOT_FOND(204, "商品未找到"),
-    INVALID_PARAM_ERROR(400,"请求参数有误");
+    INVALID_PARAM_ERROR(400, "请求参数有误"),
+    SPU_DETAIL_NOT_FOND(204, "商品详情未找到"),
+    SKU_NOT_FOND(204, "商品 SKU 未找到");
 
     private int status;
 

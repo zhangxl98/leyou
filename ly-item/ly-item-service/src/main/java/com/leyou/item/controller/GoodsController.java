@@ -1,12 +1,16 @@
 package com.leyou.item.controller;
 
 import com.leyou.common.vo.PageResult;
+import com.leyou.dto.SkuDTO;
 import com.leyou.dto.SpuDTO;
+import com.leyou.dto.SpuDetailDTO;
 import com.leyou.item.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -76,5 +80,31 @@ public class GoodsController {
     ) {
         goodsService.updateSpuSaleable(id, saleable);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 返回商品详细信息，数据回显
+     * <pre>createTime:
+     * 7/3/19 7:18 PM</pre>
+     *
+     * @param spuId 商品(SPU) id
+     * @return 商品详细信息
+     */
+    @GetMapping("/spu/detail")
+    public ResponseEntity<SpuDetailDTO> querySpuDetailBySpuId(@RequestParam("id") Long spuId) {
+        return ResponseEntity.ok(goodsService.querySpuDetailBySpuId(spuId));
+    }
+
+    /**
+     * 返回商品 SKU 信息，数据回显
+     * <pre>createTime:
+     * 7/3/19 7:50 PM</pre>
+     *
+     * @param spuId 商品(SPU) id
+     * @return SKU 信息集合
+     */
+    @GetMapping("/sku/of/spu")
+    public ResponseEntity<List<SkuDTO>> querySkuBySpuId(@RequestParam("id") Long spuId) {
+        return ResponseEntity.ok(goodsService.querySkuBySpuId(spuId));
     }
 }

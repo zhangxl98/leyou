@@ -7,7 +7,9 @@ import com.leyou.common.exception.LyException;
 import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
 import com.leyou.dto.CategoryDTO;
+import com.leyou.dto.SkuDTO;
 import com.leyou.dto.SpuDTO;
+import com.leyou.dto.SpuDetailDTO;
 import com.leyou.item.mapper.SkuMapper;
 import com.leyou.item.mapper.SpuDetailMapper;
 import com.leyou.item.mapper.SpuMapper;
@@ -176,5 +178,45 @@ public class GoodsService {
                 throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
             }
         }
+    }
+
+    /**
+     * 返回商品详情
+     * <pre>createTime:
+     * 7/3/19 7:41 PM</pre>
+     *
+     * @param spuId 商品 id
+     * @return 商品详细信息
+     */
+    public SpuDetailDTO querySpuDetailBySpuId(Long spuId) {
+
+        // 查询
+        SpuDetail spuDetail = spuDetailMapper.selectByPrimaryKey(spuId);
+
+        if (null == spuDetail) {
+            throw new LyException(ExceptionEnum.SPU_DETAIL_NOT_FOND);
+        }
+
+        return BeanHelper.copyProperties(spuDetail, SpuDetailDTO.class);
+    }
+
+    /**
+     * 返回商品 SKU 信息
+     * <pre>createTime:
+     * 7/3/19 7:51 PM</pre>
+     *
+     * @param spuId 商品(SPU) id
+     * @return SKU 信息集合
+     */
+    public List<SkuDTO> querySkuBySpuId(Long spuId) {
+
+        // 查询
+        List<Sku> skuList = skuMapper.select(Sku.builder().spuId(spuId).build());
+
+        if (CollectionUtils.isEmpty(skuList)) {
+            throw new LyException(ExceptionEnum.SKU_NOT_FOND);
+        }
+
+        return BeanHelper.copyWithCollection(skuList, SkuDTO.class);
     }
 }
