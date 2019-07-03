@@ -8,11 +8,16 @@ import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
 import com.leyou.dto.CategoryDTO;
 import com.leyou.dto.SpuDTO;
+import com.leyou.item.mapper.SkuMapper;
+import com.leyou.item.mapper.SpuDetailMapper;
 import com.leyou.item.mapper.SpuMapper;
+import com.leyou.item.pojo.Sku;
 import com.leyou.item.pojo.Spu;
+import com.leyou.item.pojo.SpuDetail;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
@@ -34,6 +39,12 @@ public class GoodsService {
 
     @Autowired
     private SpuMapper spuMapper;
+
+    @Autowired
+    private SpuDetailMapper spuDetailMapper;
+
+    @Autowired
+    private SkuMapper skuMapper;
 
     @Autowired
     private CategoryService categoryService;
@@ -95,5 +106,46 @@ public class GoodsService {
         });
 
         return new PageResult<>(spuPageInfo.getTotal(), spuDTOList);
+    }
+
+    /**
+     * 保存商品(SPU)
+     * <pre>createTime:
+     * 7/3/19 5:09 PM</pre>
+     *
+     * @param spuDTO SPU 对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveGoods(SpuDTO spuDTO) {
+
+        // 获取 SPU 信息
+        Spu spu = BeanHelper.copyProperties(spuDTO, Spu.class);
+
+        // 保存 SPU 信息
+        int count = spuMapper.insertSelective(spu);
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+
+        // 获取 SPU 详情
+        SpuDetail spuDetail = BeanHelper.copyProperties(spuDTO.getSpuDetail(), SpuDetail.class);
+
+        spuDetail.setSpuId(spu.getId());
+
+        // 保存 SPU 详情
+        count = spuDetailMapper.insertSelective(spuDetail);
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+
+        // 获取 SKU 集合
+        BeanHelper.copyWithCollection(spuDTO.getSkus(), Sku.class).forEach(sku -> {
+            sku.setSpuId(spu.getId());
+            // 保存 SKU 信息
+            if (1 != skuMapper.insertSelective(sku)) {
+                throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+
+            }
+        });
     }
 }

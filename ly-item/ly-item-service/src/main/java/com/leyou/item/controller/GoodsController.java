@@ -4,11 +4,9 @@ import com.leyou.common.vo.PageResult;
 import com.leyou.dto.SpuDTO;
 import com.leyou.item.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Description 商品控制层
  */
 @RestController
-@RequestMapping("/spu")
+@RequestMapping
 public class GoodsController {
 
     @Autowired
@@ -38,7 +36,7 @@ public class GoodsController {
      * @param rows     每页大小，默认 5 条
      * @return 分页数据集合
      */
-    @GetMapping("/page")
+    @GetMapping("/spu/page")
     public ResponseEntity<PageResult<SpuDTO>> querySpuByPage(
             @RequestParam(value = "key", required = false) String key,
             @RequestParam(value = "saleable", required = false) Boolean saleable,
@@ -46,5 +44,19 @@ public class GoodsController {
             @RequestParam(value = "rows", defaultValue = "5") Integer rows
     ) {
         return ResponseEntity.ok(goodsService.querySpuByPage(key, saleable, page, rows));
+    }
+
+    /**
+     * 新增商品(SPU)
+     * <pre>createTime:
+     * 7/3/19 5:04 PM</pre>
+     *
+     * @param spuDTO SPU 对象
+     * @return 201
+     */
+    @PostMapping("/goods")
+    public ResponseEntity<Void> saveGoods(@RequestBody SpuDTO spuDTO) {
+        goodsService.saveGoods(spuDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

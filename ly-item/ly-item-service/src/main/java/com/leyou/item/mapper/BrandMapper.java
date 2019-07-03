@@ -38,5 +38,15 @@ public interface BrandMapper extends Mapper<Brand> {
      * @param bid 品牌 id
      * @return 数据库变更条数
      */
-    int deleteCategoryBrandBy(@Param("bid") Long bid);
+    int deleteCategoryBrandByBrandId(@Param("bid") Long bid);
+
+    /**
+     * 根据分类 id 查询品牌列表
+     * <pre>createTime:
+     * 7/3/19 3:15 PM</pre>
+     *
+     * @param cid 分类 id
+     * @return 品牌集合
+     */
+    List<Brand> queryByCategoryId(@Param("cid") Long cid);
 }

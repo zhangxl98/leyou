@@ -76,11 +76,22 @@ public class SpuDTO {
     private String brandName;
 
     /**
+     * SPU 详情
+     */
+    private SpuDetailDTO spuDetail;
+
+    /**
+     * SPU 下的 SKU 集合
+     */
+    private List<SkuDTO> skus;
+
+    /**
      * 方便同时获取3级分类
+     *
      * @return
      */
     @JsonIgnore
-    public List<Long> getCategoryIds(){
+    public List<Long> getCategoryIds() {
         return Arrays.asList(cid1, cid2, cid3);
     }
 }

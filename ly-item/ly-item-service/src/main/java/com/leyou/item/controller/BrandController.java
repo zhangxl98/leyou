@@ -94,4 +94,17 @@ public class BrandController {
         brandService.deleteBrand(bid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 返回品牌列表
+     * <pre>createTime:
+     * 7/3/19 3:10 PM</pre>
+     *
+     * @param cid 分类 id
+     * @return 品牌结果集
+     */
+    @GetMapping("/of/category")
+    public ResponseEntity<List<BrandDTO>> queryByCategoryId(@RequestParam("id") Long cid) {
+        return ResponseEntity.ok(brandService.queryByCategoryId(cid));
+    }
 }

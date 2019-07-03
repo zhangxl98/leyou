@@ -126,7 +126,7 @@ public class BrandService {
         }
 
         // 删除中间表原有的数据
-        count = brandMapper.deleteCategoryBrandBy(brand.getId());
+        count = brandMapper.deleteCategoryBrandByBrandId(brand.getId());
         if (1 != count) {
             throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
         }
@@ -158,7 +158,7 @@ public class BrandService {
         }
 
         // 删除中间表数据
-        count = brandMapper.deleteCategoryBrandBy(brand.getId());
+        count = brandMapper.deleteCategoryBrandByBrandId(brand.getId());
         if (1 != count) {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
@@ -182,5 +182,24 @@ public class BrandService {
         }
 
         return BeanHelper.copyProperties(brand, BrandDTO.class);
+    }
+
+    /**
+     * 返回品牌列表
+     * <pre>createTime:
+     * 7/3/19 3:11 PM</pre>
+     *
+     * @param cid 分类 id
+     * @return 品牌列表
+     */
+    public List<BrandDTO> queryByCategoryId(Long cid) {
+
+        List<Brand> brandList = brandMapper.queryByCategoryId(cid);
+
+        if (CollectionUtils.isEmpty(brandList)) {
+            throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);
+        }
+
+        return BeanHelper.copyWithCollection(brandList, BrandDTO.class);
     }
 }

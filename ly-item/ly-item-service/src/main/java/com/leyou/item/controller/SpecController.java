@@ -33,7 +33,7 @@ public class SpecController {
      * 7/2/19 5:21 PM</pre>
      *
      * @param cid 分类 Id
-     * @return
+     * @return 规格组集合
      */
     @GetMapping("/groups/of/category")
     public ResponseEntity<List<SpecGroupDTO>> querySpecGroupByCategoryId(@RequestParam("id") Long cid) {
@@ -85,14 +85,17 @@ public class SpecController {
     /**
      * 返回规格参数信息
      * <pre>createTime:
-     * 7/2/19 6:43 PM</pre>
+     * 7/3/19 4:05 PM</pre>
      *
-     * @param gid 规格组 Id
-     * @return
+     * @param gid 规格组 id
+     * @param cid 分类 id
+     * @return 规格参数集合
      */
     @GetMapping("/params")
-    public ResponseEntity<List<SpecParamDTO>> querySpecParamBySpecGroupId(@RequestParam("gid") Long gid) {
-        return ResponseEntity.ok(specService.querySpecParamBySpecGroupId(gid));
+    public ResponseEntity<List<SpecParamDTO>> querySpecParams(
+            @RequestParam(value = "gid", required = false) Long gid,
+            @RequestParam(value = "cid", required = false) Long cid) {
+        return ResponseEntity.ok(specService.querySpecParams(gid, cid));
     }
 
     /**

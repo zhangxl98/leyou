@@ -9,7 +9,9 @@ import com.leyou.item.mapper.SpecGroupMapper;
 import com.leyou.item.mapper.SpecParamMapper;
 import com.leyou.item.pojo.SpecGroup;
 import com.leyou.item.pojo.SpecParam;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -102,15 +104,20 @@ public class SpecService {
     /**
      * 返回规格参数信息
      * <pre>createTime:
-     * 7/2/19 6:45 PM</pre>
+     * 7/3/19 4:06 PM</pre>
      *
-     * @param gid 规格组 Id
+     * @param gid 规格组 id
+     * @param cid 分类 id
      * @return 规格参数集合
      */
-    public List<SpecParamDTO> querySpecParamBySpecGroupId(Long gid) {
+    public List<SpecParamDTO> querySpecParams(Long gid, Long cid) {
 
-        // 根据规格组获取规格参数
-        List<SpecParam> specParamList = specParamMapper.select(SpecParam.builder().groupId(gid).build());
+        if (null == gid && null == cid) {
+            throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
+        }
+
+        // 根据分类 或 规格组获取规格参数
+        List<SpecParam> specParamList = specParamMapper.select(SpecParam.builder().cid(cid).groupId(gid).build());
 
         if (CollectionUtils.isEmpty(specParamList)) {
             throw new LyException(ExceptionEnum.SPEC_NOT_FOND);
