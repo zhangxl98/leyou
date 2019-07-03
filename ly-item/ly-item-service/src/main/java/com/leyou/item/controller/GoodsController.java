@@ -59,4 +59,22 @@ public class GoodsController {
         goodsService.saveGoods(spuDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    /**
+     * 商品下架
+     * <pre>createTime:
+     * 7/3/19 6:55 PM</pre>
+     *
+     * @param id       商品(SPU) id
+     * @param saleable 是否下架
+     * @return 204
+     */
+    @PutMapping("/spu/saleable")
+    public ResponseEntity<Void> updateSpuSaleable(
+            @RequestParam("id") Long id,
+            @RequestParam("saleable") Boolean saleable
+    ) {
+        goodsService.updateSpuSaleable(id, saleable);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

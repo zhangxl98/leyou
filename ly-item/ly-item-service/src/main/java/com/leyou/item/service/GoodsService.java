@@ -148,4 +148,33 @@ public class GoodsService {
             }
         });
     }
+
+    /**
+     * 商品下架
+     * <pre>createTime:
+     * 7/3/19 6:57 PM</pre>
+     *
+     * @param id       商品(SPU) id
+     * @param saleable 是否下架
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateSpuSaleable(Long id, Boolean saleable) {
+
+        // 更新 SPU 数据
+        if (1 != spuMapper.updateByPrimaryKeySelective(Spu.builder().id(id).saleable(saleable).build())) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+
+        Example example = new Example(Sku.class);
+        example.createCriteria().andEqualTo("spuId", id);
+        // 查询数据库中要修改的 SKU 条数
+        int count = skuMapper.selectCountByExample(example);
+        // 如果数据库中不含对应的 SKU 数据，则无需更新
+        if (0 != count) {
+            // 更新 SKU 数据
+            if (count != skuMapper.updateByExampleSelective(Sku.builder().enable(saleable).build(), example)) {
+                throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+            }
+        }
+    }
 }
