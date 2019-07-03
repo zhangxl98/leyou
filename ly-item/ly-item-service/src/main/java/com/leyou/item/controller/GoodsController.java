@@ -121,4 +121,18 @@ public class GoodsController {
         goodsService.updateGoods(spuDTO);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 删除商品
+     * <pre>createTime:
+     * 7/3/19 9:40 PM</pre>
+     *
+     * @param spuId 要删除的商品 id
+     * @return 204
+     */
+    @DeleteMapping("/goods/{id}")
+    public ResponseEntity<Void> deleteGoods(@PathVariable("id") Long spuId) {
+        goodsService.deleteGoods(spuId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

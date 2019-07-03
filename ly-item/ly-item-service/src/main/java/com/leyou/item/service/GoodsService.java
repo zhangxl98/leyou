@@ -252,7 +252,7 @@ public class GoodsService {
 
         // 先删除原来的 SKU
         Example example = new Example(Sku.class);
-        example.createCriteria().andEqualTo("spuId",spu.getId());
+        example.createCriteria().andEqualTo("spuId", spu.getId());
         count = skuMapper.selectCountByExample(example);
         if (count != skuMapper.deleteByExample(example)) {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
@@ -267,5 +267,34 @@ public class GoodsService {
 
             }
         });
+    }
+
+    /**
+     * 删除商品
+     * <pre>createTime:
+     * 7/3/19 9:41 PM</pre>
+     *
+     * @param spuId 要删除的商品 id
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteGoods(Long spuId) {
+
+        // 删除 SPU
+        if (1 != spuMapper.deleteByPrimaryKey(Spu.builder().id(spuId).build())) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+
+        // 删除 SPU Detail
+        if (1 != spuDetailMapper.delete(SpuDetail.builder().spuId(spuId).build())) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+
+        // 删除 SKU
+        Example example = new Example(Sku.class);
+        example.createCriteria().andEqualTo("spuId", spuId);
+        int count = skuMapper.selectCountByExample(example);
+        if (count != skuMapper.deleteByExample(example)) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
     }
 }
