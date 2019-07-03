@@ -219,4 +219,53 @@ public class GoodsService {
 
         return BeanHelper.copyWithCollection(skuList, SkuDTO.class);
     }
+
+    /**
+     * 更新商品
+     * <pre>createTime:
+     * 7/3/19 8:59 PM</pre>
+     *
+     * @param spuDTO 要更新的 SPU 对象
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateGoods(SpuDTO spuDTO) {
+
+        // 获取 SPU 信息
+        Spu spu = BeanHelper.copyProperties(spuDTO, Spu.class);
+
+        // 更新 SPU 信息
+        int count = spuMapper.updateByPrimaryKeySelective(spu);
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+
+        // 获取 SPU 详情
+        SpuDetail spuDetail = BeanHelper.copyProperties(spuDTO.getSpuDetail(), SpuDetail.class);
+
+        spuDetail.setSpuId(spu.getId());
+
+        // 更新 SPU 详情
+        count = spuDetailMapper.updateByPrimaryKeySelective(spuDetail);
+        if (1 != count) {
+            throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
+        }
+
+        // 先删除原来的 SKU
+        Example example = new Example(Sku.class);
+        example.createCriteria().andEqualTo("spuId",spu.getId());
+        count = skuMapper.selectCountByExample(example);
+        if (count != skuMapper.deleteByExample(example)) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+
+        // 获取 SKU 集合
+        BeanHelper.copyWithCollection(spuDTO.getSkus(), Sku.class).forEach(sku -> {
+            sku.setSpuId(spu.getId());
+            // 插入新的 SKU 信息
+            if (1 != skuMapper.insertSelective(sku)) {
+                throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+
+            }
+        });
+    }
 }
