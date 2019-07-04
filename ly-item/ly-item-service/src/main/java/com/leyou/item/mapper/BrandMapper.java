@@ -48,5 +48,5 @@ public interface BrandMapper extends Mapper<Brand> {
      * @param cid 分类 id
      * @return 品牌集合
      */
-    List<Brand> queryByCategoryId(@Param("cid") Long cid);
+    List<Brand> queryBrandListByCategoryId(@Param("cid") Long cid);
 }

@@ -41,13 +41,13 @@ public class GoodsController {
      * @return 分页数据集合
      */
     @GetMapping("/spu/page")
-    public ResponseEntity<PageResult<SpuDTO>> querySpuByPage(
+    public ResponseEntity<PageResult<SpuDTO>> querySpuListByPage(
             @RequestParam(value = "key", required = false) String key,
             @RequestParam(value = "saleable", required = false) Boolean saleable,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "rows", defaultValue = "5") Integer rows
     ) {
-        return ResponseEntity.ok(goodsService.querySpuByPage(key, saleable, page, rows));
+        return ResponseEntity.ok(goodsService.querySpuListByPage(key, saleable, page, rows));
     }
 
     /**
@@ -104,8 +104,8 @@ public class GoodsController {
      * @return SKU 信息集合
      */
     @GetMapping("/sku/of/spu")
-    public ResponseEntity<List<SkuDTO>> querySkuBySpuId(@RequestParam("id") Long spuId) {
-        return ResponseEntity.ok(goodsService.querySkuBySpuId(spuId));
+    public ResponseEntity<List<SkuDTO>> querySkuListBySpuId(@RequestParam("id") Long spuId) {
+        return ResponseEntity.ok(goodsService.querySkuListBySpuId(spuId));
     }
 
     /**

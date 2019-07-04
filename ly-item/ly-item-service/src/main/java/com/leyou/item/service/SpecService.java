@@ -44,7 +44,7 @@ public class SpecService {
      * @param cid 分类 Id
      * @return 规格组集合
      */
-    public List<SpecGroupDTO> querySpecGroupByCategoryId(Long cid) {
+    public List<SpecGroupDTO> querySpecGroupListByCategoryId(Long cid) {
 
         // 根据分类获取规格组
         List<SpecGroup> specGroupList = specGroupMapper.select(SpecGroup.builder().cid(cid).build());
@@ -106,18 +106,19 @@ public class SpecService {
      * <pre>createTime:
      * 7/3/19 4:06 PM</pre>
      *
-     * @param gid 规格组 id
-     * @param cid 分类 id
+     * @param gid       规格组 id
+     * @param cid       分类 id
+     * @param searching 是否用于搜索
      * @return 规格参数集合
      */
-    public List<SpecParamDTO> querySpecParams(Long gid, Long cid) {
+    public List<SpecParamDTO> querySpecParamsListByGroupIdOrCategoryId(Long gid, Long cid, Boolean searching) {
 
         if (null == gid && null == cid) {
             throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
         }
 
         // 根据分类 或 规格组获取规格参数
-        List<SpecParam> specParamList = specParamMapper.select(SpecParam.builder().cid(cid).groupId(gid).build());
+        List<SpecParam> specParamList = specParamMapper.select(SpecParam.builder().cid(cid).groupId(gid).searching(searching).build());
 
         if (CollectionUtils.isEmpty(specParamList)) {
             throw new LyException(ExceptionEnum.SPEC_NOT_FOND);
@@ -133,7 +134,7 @@ public class SpecService {
      *
      * @param specParamDTO 规格参数信息
      */
-    public void saveSpecParamBySpecGroupId(SpecParamDTO specParamDTO) {
+    public void saveSpecParam(SpecParamDTO specParamDTO) {
 
         // 保存
         if (1 != specParamMapper.insertSelective(BeanHelper.copyProperties(specParamDTO, SpecParam.class))) {
@@ -148,7 +149,7 @@ public class SpecService {
      *
      * @param specParamDTO 规格参数信息
      */
-    public void updateSpecParamBySpecGroupId(SpecParamDTO specParamDTO) {
+    public void updateSpecParam(SpecParamDTO specParamDTO) {
 
         // 修改
         if (1 != specParamMapper.updateByPrimaryKeySelective(BeanHelper.copyProperties(specParamDTO, SpecParam.class))) {
@@ -157,13 +158,13 @@ public class SpecService {
     }
 
     /**
-     * 删除规格组
+     * 删除规格参数
      * <pre>createTime:
      * 7/2/19 7:56 PM</pre>
      *
      * @param pid 规格组 Id
      */
-    public void deleteSpecParamBySpecGroupId(Long pid) {
+    public void deleteSpecParam(Long pid) {
 
         // 删除
         if (1 != specParamMapper.deleteByPrimaryKey(pid)) {

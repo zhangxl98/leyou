@@ -36,8 +36,8 @@ public class SpecController {
      * @return 规格组集合
      */
     @GetMapping("/groups/of/category")
-    public ResponseEntity<List<SpecGroupDTO>> querySpecGroupByCategoryId(@RequestParam("id") Long cid) {
-        return ResponseEntity.ok(specService.querySpecGroupByCategoryId(cid));
+    public ResponseEntity<List<SpecGroupDTO>> querySpecGroupListByCategoryId(@RequestParam("id") Long cid) {
+        return ResponseEntity.ok(specService.querySpecGroupListByCategoryId(cid));
     }
 
     /**
@@ -46,7 +46,7 @@ public class SpecController {
      * 7/2/19 7:15 PM</pre>
      *
      * @param specGroupDTO 规格组信息
-     * @return 状态码
+     * @return 201
      */
     @PostMapping("/group")
     public ResponseEntity<Void> saveSpecGroup(@RequestBody SpecGroupDTO specGroupDTO) {
@@ -60,7 +60,7 @@ public class SpecController {
      * 7/2/19 7:25 PM</pre>
      *
      * @param specGroupDTO 规格组信息
-     * @return 状态码
+     * @return 204
      */
     @PutMapping("/group")
     public ResponseEntity<Void> updateSpecGroup(@RequestBody SpecGroupDTO specGroupDTO) {
@@ -74,7 +74,7 @@ public class SpecController {
      * 7/2/19 7:29 PM</pre>
      *
      * @param gid 规格组 Id
-     * @return 状态码
+     * @return 204
      */
     @DeleteMapping("/group/{gid}")
     public ResponseEntity<Void> deleteSpecGroup(@PathVariable("gid") Long gid) {
@@ -87,15 +87,17 @@ public class SpecController {
      * <pre>createTime:
      * 7/3/19 4:05 PM</pre>
      *
-     * @param gid 规格组 id
-     * @param cid 分类 id
+     * @param gid       规格组 id
+     * @param cid       分类 id
+     * @param searching 是否用于搜索
      * @return 规格参数集合
      */
     @GetMapping("/params")
-    public ResponseEntity<List<SpecParamDTO>> querySpecParams(
+    public ResponseEntity<List<SpecParamDTO>> querySpecParamsListByGroupIdOrCategoryId(
             @RequestParam(value = "gid", required = false) Long gid,
-            @RequestParam(value = "cid", required = false) Long cid) {
-        return ResponseEntity.ok(specService.querySpecParams(gid, cid));
+            @RequestParam(value = "cid", required = false) Long cid,
+            @RequestParam(value = "searching", required = false) Boolean searching) {
+        return ResponseEntity.ok(specService.querySpecParamsListByGroupIdOrCategoryId(gid, cid, searching));
     }
 
     /**
@@ -104,11 +106,11 @@ public class SpecController {
      * 7/2/19 7:41 PM</pre>
      *
      * @param specParamDTO 规格参数信息
-     * @return 状态码
+     * @return 201
      */
     @PostMapping("/param")
-    public ResponseEntity<List<SpecParamDTO>> saveSpecParamBySpecGroupId(@RequestBody SpecParamDTO specParamDTO) {
-        specService.saveSpecParamBySpecGroupId(specParamDTO);
+    public ResponseEntity<Void> saveSpecParam(@RequestBody SpecParamDTO specParamDTO) {
+        specService.saveSpecParam(specParamDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -118,25 +120,25 @@ public class SpecController {
      * 7/2/19 7:52 PM</pre>
      *
      * @param specParamDTO 规格参数信息
-     * @return 状态码
+     * @return 204
      */
     @PutMapping("/param")
-    public ResponseEntity<List<SpecParamDTO>> updateSpecParamBySpecGroupId(@RequestBody SpecParamDTO specParamDTO) {
-        specService.updateSpecParamBySpecGroupId(specParamDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> updateSpecParam(@RequestBody SpecParamDTO specParamDTO) {
+        specService.updateSpecParam(specParamDTO);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /**
-     * 删除规格组
+     * 删除规格参数
      * <pre>createTime:
      * 7/2/19 7:56 PM</pre>
      *
      * @param pid 规格组 Id
-     * @return 状态码
+     * @return 204
      */
     @DeleteMapping("/param/{pid}")
-    public ResponseEntity<List<SpecParamDTO>> deleteSpecParamBySpecGroupId(@PathVariable("pid") Long pid) {
-        specService.deleteSpecParamBySpecGroupId(pid);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<Void> deleteSpecParam(@PathVariable("pid") Long pid) {
+        specService.deleteSpecParam(pid);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

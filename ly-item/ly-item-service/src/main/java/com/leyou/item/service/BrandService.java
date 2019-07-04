@@ -172,7 +172,7 @@ public class BrandService {
      * @param id 品牌 id
      * @return 品牌数据
      */
-    public BrandDTO queryById(Long id) {
+    public BrandDTO queryBrandById(Long id) {
 
         // 查询
         Brand brand = brandMapper.selectByPrimaryKey(id);
@@ -192,9 +192,9 @@ public class BrandService {
      * @param cid 分类 id
      * @return 品牌列表
      */
-    public List<BrandDTO> queryByCategoryId(Long cid) {
+    public List<BrandDTO> queryBrandListByCategoryId(Long cid) {
 
-        List<Brand> brandList = brandMapper.queryByCategoryId(cid);
+        List<Brand> brandList = brandMapper.queryBrandListByCategoryId(cid);
 
         if (CollectionUtils.isEmpty(brandList)) {
             throw new LyException(ExceptionEnum.BRAND_NOT_FOUND);

@@ -12,7 +12,7 @@
     <delete id="deleteCategoryBrandByBrandId">
         DELETE FROM tb_category_brand WHERE brand_id = #{bid}
     </delete>
-    <select id="queryByCategoryId" resultType="com.leyou.item.pojo.Brand">
+    <select id="queryBrandListByCategoryId" resultType="com.leyou.item.pojo.Brand">
         SELECT tb.id, tb.name FROM tb_category_brand tcb INNER JOIN tb_brand tb ON tcb.brand_id = tb.id WHERE tcb.category_id = #{cid}
     </select>
 </mapper>

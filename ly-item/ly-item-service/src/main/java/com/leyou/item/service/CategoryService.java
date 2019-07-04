@@ -34,7 +34,7 @@ public class CategoryService {
      * @param pid 父类目 id
      * @return
      */
-    public List<CategoryDTO> queryByParentId(Long pid) {
+    public List<CategoryDTO> queryCategoryListByParentId(Long pid) {
 
         // mapper 将对象中的非空属性作为查询条件
         List<Category> categoryList = categoryMapper.select(Category.builder().parentId(pid).build());
@@ -57,9 +57,9 @@ public class CategoryService {
      * @param brandId 品牌 id
      * @return 分类集合
      */
-    public List<CategoryDTO> queryByBrandId(Long brandId) {
+    public List<CategoryDTO> queryCategoryListByBrandId(Long brandId) {
 
-        List<Category> categoryList = categoryMapper.queryByBrandId(brandId);
+        List<Category> categoryList = categoryMapper.queryCategoryListByBrandId(brandId);
 
         if (CollectionUtils.isEmpty(categoryList)) {
             throw new LyException(ExceptionEnum.CATEGORY_NOT_FOND);
@@ -76,7 +76,7 @@ public class CategoryService {
      * @param ids 类目 id 列表
      * @return 类目数据
      */
-    public List<CategoryDTO> queryByIds(List<Long> ids) {
+    public List<CategoryDTO> queryCategoryListByIds(List<Long> ids) {
 
         // 查询
         List<Category> categoryList = categoryMapper.selectByIdList(ids);

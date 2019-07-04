@@ -87,7 +87,7 @@ public class BrandController {
      * 7/1/19 6:54 PM</pre>
      *
      * @param bid 品牌 id
-     * @return 状态码
+     * @return 204
      */
     @DeleteMapping
     public ResponseEntity<Void> deleteBrand(@RequestParam("bid") Long bid) {
@@ -104,7 +104,20 @@ public class BrandController {
      * @return 品牌结果集
      */
     @GetMapping("/of/category")
-    public ResponseEntity<List<BrandDTO>> queryByCategoryId(@RequestParam("id") Long cid) {
-        return ResponseEntity.ok(brandService.queryByCategoryId(cid));
+    public ResponseEntity<List<BrandDTO>> queryBrandListByCategoryId(@RequestParam("id") Long cid) {
+        return ResponseEntity.ok(brandService.queryBrandListByCategoryId(cid));
+    }
+
+    /**
+     * 根据品牌 id 返回品牌数据
+     * <pre>createTime:
+     * 7/4/19 10:03 AM</pre>
+     *
+     * @param bid 品牌 id
+     * @return 品牌数据信息
+     */
+    @GetMapping("{id}")
+    public ResponseEntity<BrandDTO> queryBrandById(@PathVariable("id") Long bid) {
+        return ResponseEntity.ok(brandService.queryBrandById(bid));
     }
 }

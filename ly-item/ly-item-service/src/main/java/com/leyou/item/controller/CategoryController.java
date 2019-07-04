@@ -34,11 +34,11 @@ public class CategoryController {
      * 6/23/19 4:21 PM</pre>
      *
      * @param pid 父类目 id
-     * @return
+     * @return 分类信息集合
      */
     @GetMapping("/of/parent")
-    public ResponseEntity<List<CategoryDTO>> queryByParentId(@RequestParam(value = "pid", defaultValue = "0") Long pid) {
-        return ResponseEntity.ok(this.categoryService.queryByParentId(pid));
+    public ResponseEntity<List<CategoryDTO>> queryCategoryListByParentId(@RequestParam(value = "pid", defaultValue = "0") Long pid) {
+        return ResponseEntity.ok(this.categoryService.queryCategoryListByParentId(pid));
     }
 
     /**
@@ -50,7 +50,20 @@ public class CategoryController {
      * @return 分类集合
      */
     @GetMapping("/of/brand")
-    public ResponseEntity<List<CategoryDTO>> queryByBrandId(@RequestParam("id") Long brandId) {
-        return ResponseEntity.ok(categoryService.queryByBrandId(brandId));
+    public ResponseEntity<List<CategoryDTO>> queryCategoryListByBrandId(@RequestParam("id") Long brandId) {
+        return ResponseEntity.ok(categoryService.queryCategoryListByBrandId(brandId));
+    }
+
+    /**
+     * 根据商品分类查询商品分类信息
+     * <pre>createTime:
+     * 7/4/19 9:57 AM</pre>
+     *
+     * @param cids 商品分类 id 集合
+     * @return 商品分类信息集合
+     */
+    @GetMapping("/list")
+    public ResponseEntity<List<CategoryDTO>> queryCategoryListByIds(@RequestParam("ids") List<Long> cids) {
+        return ResponseEntity.ok(categoryService.queryCategoryListByIds(cids));
     }
 }

@@ -65,7 +65,7 @@ public class GoodsService {
      * @param rows     每页大小，默认 5 条
      * @return 分页数据集合
      */
-    public PageResult<SpuDTO> querySpuByPage(String key, Boolean saleable, Integer page, Integer rows) {
+    public PageResult<SpuDTO> querySpuListByPage(String key, Boolean saleable, Integer page, Integer rows) {
 
         PageHelper.startPage(page, rows);
 
@@ -101,10 +101,10 @@ public class GoodsService {
         spuDTOList.forEach(spuDTO -> {
 
             // 获取分类名称
-            spuDTO.setCategoryName(categoryService.queryByIds(spuDTO.getCategoryIds()).stream().map(CategoryDTO::getName).collect(Collectors.joining("/")));
+            spuDTO.setCategoryName(categoryService.queryCategoryListByIds(spuDTO.getCategoryIds()).stream().map(CategoryDTO::getName).collect(Collectors.joining("/")));
 
             // 获取品牌名称
-            spuDTO.setBrandName(brandService.queryById(spuDTO.getBrandId()).getName());
+            spuDTO.setBrandName(brandService.queryBrandById(spuDTO.getBrandId()).getName());
         });
 
         return new PageResult<>(spuPageInfo.getTotal(), spuDTOList);
@@ -208,7 +208,7 @@ public class GoodsService {
      * @param spuId 商品(SPU) id
      * @return SKU 信息集合
      */
-    public List<SkuDTO> querySkuBySpuId(Long spuId) {
+    public List<SkuDTO> querySkuListBySpuId(Long spuId) {
 
         // 查询
         List<Sku> skuList = skuMapper.select(Sku.builder().spuId(spuId).build());

@@ -14,6 +14,7 @@ zuul:
     # 将商品服务映射到 /item/**
     item-service: /item/**
     upload-service: /upload/**
+    search-service: /search/**
 hystrix:
   command:
     default:

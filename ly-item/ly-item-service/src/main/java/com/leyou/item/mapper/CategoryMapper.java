@@ -26,5 +26,5 @@ public interface CategoryMapper extends BaseMapper<Category> {
      * @param brandId 品牌 id
      * @return 分类集合
      */
-    List<Category> queryByBrandId(@Param("brandId") Long brandId);
+    List<Category> queryCategoryListByBrandId(@Param("brandId") Long brandId);
 }
