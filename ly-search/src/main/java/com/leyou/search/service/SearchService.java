@@ -1,12 +1,25 @@
 package com.leyou.search.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.leyou.common.enums.ExceptionEnum;
+import com.leyou.common.exception.LyException;
+import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.utils.JsonUtils;
+import com.leyou.common.vo.PageResult;
 import com.leyou.dto.*;
 import com.leyou.item.client.ItemClient;
+import com.leyou.search.dto.GoodsDTO;
+import com.leyou.search.dto.SearchRequest;
 import com.leyou.search.pojo.Goods;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
+import org.springframework.data.elasticsearch.core.query.FetchSourceFilter;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,6 +40,9 @@ public class SearchService {
 
     @Autowired
     private ItemClient itemClient;
+
+    @Autowired
+    private ElasticsearchTemplate esTemplate;
 
     /**
      * 将一个 SPU 转化为一个 Goods 对象
@@ -49,10 +65,10 @@ public class SearchService {
 
         // 获取 SPU 下的所有 SKU 的 JSON 数组，并存储到 Map 中
         ArrayList<Map<String, Object>> skuMapList = new ArrayList<>();
-        Map<String, Object> skuMap = new HashMap<>(16);
         // 获取 SPU 下的所有 SKU 价格的集合
         Set<Long> priceSet = new HashSet<>();
         itemClient.querySkuListBySpuId(spuDTO.getId()).forEach(skuDTO -> {
+            Map<String, Object> skuMap = new HashMap<>(16);
             skuMap.put("id", skuDTO.getId());
             skuMap.put("price", skuDTO.getPrice());
             skuMap.put("title", skuDTO.getTitle());
@@ -103,7 +119,7 @@ public class SearchService {
                 .id(spuDTO.getId())
                 .subTitle(spuDTO.getSubTitle())
                 // SPU 下的所有 SKU 的 JSON 数组
-                .skus(JsonUtils.toString(skuMap))
+                .skus(JsonUtils.toString(skuMapList))
                 .all(all)
                 .brandId(spuDTO.getBrandId())
                 .categoryId(spuDTO.getCid3())
@@ -169,5 +185,44 @@ public class SearchService {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    /**
+     * 搜索商品
+     * <pre>createTime:
+     * 7/5/19 4:20 PM</pre>
+     *
+     * @param request 搜索的参数，搜索关键字、页数
+     * @return 商品列表
+     */
+    public PageResult<GoodsDTO> searchGoods(SearchRequest request) {
+
+        // 判空
+        if (StringUtils.isBlank(request.getKey())) {
+            throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
+        }
+
+        // 原生查询构建器
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+
+        // source 过滤
+        queryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id", "subTitle", "skus"}, null));
+
+        // 搜索条件
+        queryBuilder.withQuery(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
+
+        // 分页
+        queryBuilder.withPageable(PageRequest.of(request.getPage() - 1, request.getSize()));
+
+        // 构建查询条件，得到查询结果
+        AggregatedPage<Goods> result = esTemplate.queryForPage(queryBuilder.build(), Goods.class);
+
+        // 解析查询结果
+        long total = result.getTotalElements();
+        int totalPages = result.getTotalPages();
+        List<Goods> goodsList = result.getContent();
+
+        // 返回
+        return new PageResult<>(total, totalPages, BeanHelper.copyWithCollection(goodsList, GoodsDTO.class));
     }
 }

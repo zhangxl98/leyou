@@ -10,10 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +22,7 @@ import java.util.stream.Collectors;
  * @OS Ubuntu 18.04 LTS
  * @Device ASRock-Desktop
  * @Version V1.0.0
- * @Description 导入索引数据
+ * @Description 导入索引库数据
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = LySearchApplication.class)
@@ -32,9 +30,6 @@ public class LoadDataTest {
 
     @Autowired
     private SearchService searchService;
-
-    @Autowired
-    private ElasticsearchTemplate esTemplate;
 
     @Autowired
     private GoodsRepository goodsRepository;

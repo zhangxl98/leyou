@@ -22,7 +22,7 @@ import java.util.Set;
  * @Version V1.0.0
  * @Description 要保存到索引库的商品实体类
  */
-@Document(indexName = "goods", type = "docs", shards = 1, replicas = 1)
+@Document(indexName = "goods", type = "docs", shards = 5, replicas = 1)
 @Data
 @Builder
 @NoArgsConstructor

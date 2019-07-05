@@ -42,9 +42,12 @@ ly:
     # 允许的域
     allowedOrigins:
       - http://manage.leyou.com
+      - http://www.leyou.com
       # 开发阶段，方便测试，添加 localhost
       - http://localhost:9001
       - http://127.0.0.1:9001
+      - http://localhost:9002
+      - http://127.0.0.1:9002
     # 是否发送 cookie 信息
     allowCredentials: true
     # 头信息
