@@ -66,8 +66,6 @@ public class LoadData {
                             .map(indexService::buildGoods)
                             .collect(Collectors.toList())
             );
-
-            log.info("LoadData Success!");
         }
     }
 }
