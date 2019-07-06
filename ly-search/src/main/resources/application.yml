@@ -7,7 +7,7 @@ spring:
   data:
     elasticsearch:
       cluster-name: leyou-elastic
-      cluster-nodes: 127.0.0.1:9301,127.0.0.1:9302,127.0.0.1:9303
+      cluster-nodes: 127.0.0.1:9311
 
 
 eureka:
