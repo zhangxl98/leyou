@@ -1,10 +1,7 @@
 package com.leyou.item.client;
 
 import com.leyou.common.vo.PageResult;
-import com.leyou.dto.BrandDTO;
-import com.leyou.dto.CategoryDTO;
-import com.leyou.dto.SkuDTO;
-import com.leyou.dto.SpuDTO;
+import com.leyou.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,4 +74,31 @@ public interface ItemClient {
      */
     @GetMapping("/sku/of/spu")
     List<SkuDTO> querySkuListBySpuId(@RequestParam("id") Long spuId);
+
+    /**
+     * 返回规格参数信息
+     * <pre>createTime:
+     * 7/3/19 4:05 PM</pre>
+     *
+     * @param gid       规格组 id
+     * @param cid       分类 id
+     * @param searching 是否用于搜索
+     * @return 规格参数集合
+     */
+    @GetMapping("/spec/params")
+    List<SpecParamDTO> querySpecParamsListByGroupIdOrCategoryId(
+            @RequestParam(value = "gid", required = false) Long gid,
+            @RequestParam(value = "cid", required = false) Long cid,
+            @RequestParam(value = "searching", required = false) Boolean searching);
+
+    /**
+     * 返回商品详细信息，数据回显
+     * <pre>createTime:
+     * 7/6/19 9:38 PM</pre>
+     *
+     * @param spuId 商品(SPU) id
+     * @return 商品详细信息
+     */
+    @GetMapping("/spu/detail")
+    SpuDetailDTO querySpuDetailBySpuId(@RequestParam("id") Long spuId);
 }
