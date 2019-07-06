@@ -1,6 +1,6 @@
 package com.leyou.search.service;
 
-import com.leyou.common.utils.BeanHelper;
+import com.leyou.common.utils.JsonUtils;
 import com.leyou.dto.CategoryDTO;
 import com.leyou.dto.SpuDTO;
 import com.leyou.item.client.ItemClient;
@@ -8,6 +8,7 @@ import com.leyou.search.pojo.Goods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -61,6 +62,24 @@ public class IndexService {
         String brandName = itemClient.queryBrandById(spuDTO.getBrandId()).getName();
         String all = spuDTO.getName() + categoryName + brandName;
 
+        // skus 将 SPU 下所有的 SKU 的 JSON 数据存储到 Map 中
+        Map<String, Object> skuMap = new HashMap<>(16);
+        // 最终要加入 Goods 的 List
+        List<Map<String, Object>> skuMapList = new ArrayList<>();
+        // price Set 去重
+        Set<Long> priceSet = new HashSet<>();
+        itemClient.querySkuListBySpuId(spuDTO.getId()).forEach(skuDTO -> {
+            skuMap.put("id", skuDTO.getId());
+            skuMap.put("price", skuDTO.getPrice());
+            skuMap.put("title", skuDTO.getTitle());
+            skuMap.put("image", skuDTO.getImages().split(","));
+
+            skuMapList.add(skuMap);
+
+            priceSet.add(skuDTO.getPrice());
+        });
+        String skus = JsonUtils.toString(skuMapList);
+
 
         return Goods.builder()
                 .id(id)
@@ -69,6 +88,8 @@ public class IndexService {
                 .categoryId(categoryId)
                 .createTime(createTime)
                 .all(all)
+                .skus(skus)
+                .price(priceSet)
                 .build();
     }
 }
