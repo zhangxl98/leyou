@@ -120,4 +120,17 @@ public class BrandController {
     public ResponseEntity<BrandDTO> queryBrandById(@PathVariable("id") Long bid) {
         return ResponseEntity.ok(brandService.queryBrandById(bid));
     }
+
+    /**
+     * 根据品牌 id 返回品牌数据
+     * <pre>createTime:
+     * 7/7/19 4:48 PM</pre>
+     *
+     * @param bids 品牌 id 列表
+     * @return 品牌数据信息集合
+     */
+    @GetMapping("/list")
+    public ResponseEntity<List<BrandDTO>> queryBrandByIds(@RequestParam("ids") List<Long> bids) {
+        return ResponseEntity.ok(brandService.queryBrandByIds(bids));
+    }
 }

@@ -3,7 +3,6 @@ package com.leyou.item.client;
 import com.leyou.common.vo.PageResult;
 import com.leyou.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -101,4 +100,15 @@ public interface ItemClient {
      */
     @GetMapping("/spu/detail")
     SpuDetailDTO querySpuDetailBySpuId(@RequestParam("id") Long spuId);
+
+    /**
+     * 根据品牌 id 返回品牌数据
+     * <pre>createTime:
+     * 7/7/19 4:52 PM</pre>
+     *
+     * @param bids 品牌 id 列表
+     * @return 品牌数据信息集合
+     */
+    @GetMapping("/brand/list")
+    List<BrandDTO> queryBrandByIds(@RequestParam("ids") List<Long> bids);
 }

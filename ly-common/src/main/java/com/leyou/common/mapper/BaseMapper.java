@@ -1,4 +1,4 @@
-package com.leyou.item.mapper;
+package com.leyou.common.mapper;
 
 
 import tk.mybatis.mapper.additional.idlist.IdListMapper;

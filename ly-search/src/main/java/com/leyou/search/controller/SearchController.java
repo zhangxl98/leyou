@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -37,5 +40,18 @@ public class SearchController {
     @PostMapping("/page")
     public ResponseEntity<PageResult<GoodsDTO>> searchGoods(@RequestBody SearchRequest searchRequest) {
         return ResponseEntity.ok(searchService.searchGoods(searchRequest));
+    }
+
+    /**
+     * 返回过滤项
+     * <pre>createTime:
+     * 7/7/19 4:00 PM</pre>
+     *
+     * @param searchRequest 搜索的参数，搜索关键字、页数
+     * @return 搜索过滤项
+     */
+    @PostMapping("/filter")
+    public ResponseEntity<Map<String, List<?>>> queryFilters(@RequestBody SearchRequest searchRequest) {
+        return ResponseEntity.ok(searchService.queryFilters(searchRequest));
     }
 }

@@ -1,8 +1,8 @@
 package com.leyou.item.mapper;
 
+import com.leyou.common.mapper.BaseMapper;
 import com.leyou.item.pojo.Brand;
 import org.apache.ibatis.annotations.Param;
-import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
  * @Version V1.0.0
  * @Description 品牌通用 mapper 接口
  */
-public interface BrandMapper extends Mapper<Brand> {
+public interface BrandMapper extends BaseMapper<Brand> {
 
     /**
      * 维护中间表
