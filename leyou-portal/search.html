@@ -122,7 +122,7 @@
                 <div class="fl key">{{ k }}</div>
                 <div class="fl value">
                     <ul class="type-list">
-                        <li v-for="(o, j) in v" :key="j">
+                        <li v-for="(o, j) in v" :key="j" @click="selectFilter(k,o.id || o)">
                             <a v-text="o.name || o"></a>
                         </li>
                     </ul>
@@ -133,7 +133,7 @@
                 <div class="fl key brand">{{ k }}</div>
                 <div class="value logos">
                     <ul class="logo-list">
-                        <li v-for="(o, j) in v" :key="j" v-if="o.image">
+                        <li v-for="(o, j) in v" :key="j" v-if="o.image"  @click="selectFilter(k,o.id)">
                             <img :src="o.image" />
                         </li>
                     </ul>
@@ -339,6 +339,8 @@
             key: "",
             // 分页参数
             page: 0,
+            // 过滤
+            filter:{},
           },
           // 搜索到的商品数据
           goodsList: [],
@@ -371,6 +373,14 @@
               this.filterList = resp.data
             })
           },
+          selectFilter(key,val){
+              // 复制原来的search
+              const {...obj} = this.search.filter;
+              // 添加新的属性
+              obj[key] = val;
+              // 赋值给search
+              this.search.filter = obj;
+          },
         },
         components:{
             lyTop: () => import("./js/pages/top.js")
@@ -379,6 +389,8 @@
           // 页面加载后获取搜索关键字和分页参数
           const key = ly.getUrlParam('key')
           const page = ly.getUrlParam('page')
+          // 获取hash属性
+          const hash = ly.parse(location.hash.substring(1));
 
           // 判断 key 是否有值
           if(!key) {
@@ -393,6 +405,20 @@
           this.loadData()
           this.loadFilterList()
 
+        },
+        watch: {
+          "search.filter":{
+            handler(val) {
+              // 把search对象中除了key以外的属性变成请求参数，
+              const {key, ...obj} = this.search;
+              // 拼接在url路径的hash中
+              window.location.hash = "#" + ly.stringify(obj);
+              // 因为hash变化不引起刷新，需要手动调用loadData
+              this.loadData();
+              // 还要加载新的过滤项
+              this.loadFilterList();
+            }
+          },
         },
     });
 </script>

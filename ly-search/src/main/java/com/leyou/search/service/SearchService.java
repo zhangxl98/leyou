@@ -12,6 +12,7 @@ import com.leyou.search.dto.GoodsDTO;
 import com.leyou.search.dto.SearchRequest;
 import com.leyou.search.pojo.Goods;
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -32,6 +33,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -222,6 +224,29 @@ public class SearchService {
      * @return 查询条件
      */
     private QueryBuilder buildBasicQuery(SearchRequest request) {
-        return QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND);
+
+        BoolQueryBuilder queryBuilder = new BoolQueryBuilder();
+
+        // 查询条件
+        queryBuilder.must(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
+
+        // set 中存放的是 map 的实体，key：过滤条件的名称，value：过滤条件的值
+        Set<Map.Entry<String, String>> entrySet = request.getFilter().entrySet();
+
+        entrySet.forEach(entry -> {
+            String key = entry.getKey();
+            // 分类、品牌、规格参数的key都需要做一些处理
+            if ("分类".equals(key)) {
+                key = "categoryId";
+            } else if ("品牌".equals(key)) {
+                key = "brandId";
+            } else {
+                key = "specs." + key + ".keyword";
+            }
+
+            queryBuilder.filter(QueryBuilders.termQuery(key, entry.getValue()));
+        });
+
+        return queryBuilder;
     }
 }

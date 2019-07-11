@@ -1,5 +1,7 @@
 package com.leyou.search.dto;
 
+import java.util.Map;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -23,6 +25,13 @@ public class SearchRequest {
     private Integer page;
 
     /**
+     * 过滤项
+     * key：过滤条件的名称
+     * value：过滤条件的值
+     */
+    private Map<String, String> filter;
+
+    /**
      * 每页大小，不从页面接收，而是固定大小
      */
     private static final Integer DEFAULT_SIZE = 20;
@@ -41,7 +50,7 @@ public class SearchRequest {
     }
 
     public Integer getPage() {
-        if(page == null){
+        if (page == null) {
             return DEFAULT_PAGE;
         }
         // 获取页码时做一些校验，不能小于 1
@@ -54,5 +63,13 @@ public class SearchRequest {
 
     public Integer getSize() {
         return DEFAULT_SIZE;
+    }
+
+    public Map<String, String> getFilter() {
+        return filter;
+    }
+
+    public void setFilter(Map<String, String> filter) {
+        this.filter = filter;
     }
 }
