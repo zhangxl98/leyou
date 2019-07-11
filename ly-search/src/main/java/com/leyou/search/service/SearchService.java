@@ -6,17 +6,20 @@ import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.vo.PageResult;
 import com.leyou.dto.BrandDTO;
 import com.leyou.dto.CategoryDTO;
+import com.leyou.dto.SpecParamDTO;
 import com.leyou.item.client.ItemClient;
 import com.leyou.search.dto.GoodsDTO;
 import com.leyou.search.dto.SearchRequest;
 import com.leyou.search.pojo.Goods;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.index.query.Operator;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.LongTerms;
+import org.elasticsearch.search.aggregations.bucket.terms.StringTerms;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
@@ -26,10 +29,11 @@ import org.springframework.data.elasticsearch.core.query.FetchSourceFilterBuilde
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -72,7 +76,8 @@ public class SearchService {
         queryBuilder.withSourceFilter(new FetchSourceFilter(new String[]{"id", "subTitle", "skus"}, null));
 
         // 搜索条件
-        queryBuilder.withQuery(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
+        QueryBuilder basicQuery = buildBasicQuery(request);
+        queryBuilder.withQuery(basicQuery);
 
         // 分页
         queryBuilder.withPageable(PageRequest.of(request.getPage() - 1, request.getSize()));
@@ -105,11 +110,12 @@ public class SearchService {
         String brandAgg = "brandAgg";
 
         // 创建搜索过滤项集合
-        LinkedHashMap<String, List<?>> filterList = new LinkedHashMap<>();
+        Map<String, List<?>> filterList = new HashMap<>(16);
 
         // 构建查询条件
         NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
-        queryBuilder.withQuery(QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND));
+        QueryBuilder basicQuery = buildBasicQuery(request);
+        queryBuilder.withQuery(basicQuery);
         // 每页显示 1 个
         queryBuilder.withPageable(PageRequest.of(0, 1));
         // 显示空的 source
@@ -150,6 +156,72 @@ public class SearchService {
         List<BrandDTO> brandDTOList = itemClient.queryBrandByIds(brandIds);
         filterList.put("品牌", brandDTOList);
 
+        // 当分类唯一时，可以处理可搜索的规格参数
+        if (null != categoryIds && categoryIds.size() == 1) {
+            handleSpecAgg(categoryIds.get(0), buildBasicQuery(request), filterList);
+        }
+
         return filterList;
+    }
+
+    /**
+     * 处理可搜索规格参数的聚合
+     * <pre>createTime:
+     * 7/11/19 3:08 PM</pre>
+     *
+     * @param cid        分类 id
+     * @param basicQuery 查询条件
+     * @param filterList 封装的结果
+     */
+    private void handleSpecAgg(Long cid, QueryBuilder basicQuery, Map<String, List<?>> filterList) {
+
+        // 查询可搜索的规格参数
+        List<SpecParamDTO> specParamDTOS = itemClient.querySpecParamsListByGroupIdOrCategoryId(null, cid, true);
+
+        // 构建查询
+        NativeSearchQueryBuilder queryBuilder = new NativeSearchQueryBuilder();
+        // 先执行查询，搜索，对搜索到的数据进行聚合
+        queryBuilder.withQuery(basicQuery);
+        queryBuilder.withSourceFilter(new FetchSourceFilterBuilder().build());
+        queryBuilder.withPageable(PageRequest.of(0, 1));
+
+        // 循环 specParamDTOS ，添加聚合条件
+        specParamDTOS.forEach(specParamDTO -> {
+            // 聚合的名称为可搜索规格参数的名称
+            String name = specParamDTO.getName();
+            queryBuilder.addAggregation(AggregationBuilders.terms(name).field("specs." + name + ".keyword"));
+        });
+
+        // 执行查询聚合业务
+        AggregatedPage<Goods> goodsAggregatedPage = esTemplate.queryForPage(queryBuilder.build(), Goods.class);
+
+        // 获取聚合
+        Aggregations aggregations = goodsAggregatedPage.getAggregations();
+
+        // 循环解析聚合
+        specParamDTOS.forEach(specParamDTO -> {
+            String name = specParamDTO.getName();
+
+            StringTerms stringTerms = aggregations.get(name);
+
+            List<String> value = stringTerms.getBuckets()
+                    .stream()
+                    .map(StringTerms.Bucket::getKeyAsString)
+                    .collect(Collectors.toList());
+
+            filterList.put(name, value);
+        });
+    }
+
+    /**
+     * 查询条件
+     * <pre>createTime:
+     * 7/11/19 3:00 PM</pre>
+     *
+     * @param request 搜索的参数，搜索关键字、页数
+     * @return 查询条件
+     */
+    private QueryBuilder buildBasicQuery(SearchRequest request) {
+        return QueryBuilders.matchQuery("all", request.getKey()).operator(Operator.AND);
     }
 }

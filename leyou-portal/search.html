@@ -123,7 +123,7 @@
                 <div class="fl value">
                     <ul class="type-list">
                         <li v-for="(o, j) in v" :key="j">
-                            <a>{{ o.name }}</a>
+                            <a v-text="o.name || o"></a>
                         </li>
                     </ul>
                 </div>
