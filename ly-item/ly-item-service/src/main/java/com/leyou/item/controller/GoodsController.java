@@ -23,7 +23,6 @@ import java.util.List;
  * @Description 商品控制层
  */
 @RestController
-@RequestMapping
 public class GoodsController {
 
     @Autowired
@@ -93,6 +92,19 @@ public class GoodsController {
     @GetMapping("/spu/detail")
     public ResponseEntity<SpuDetailDTO> querySpuDetailBySpuId(@RequestParam("id") Long spuId) {
         return ResponseEntity.ok(goodsService.querySpuDetailBySpuId(spuId));
+    }
+
+    /**
+     * 返回商品信息
+     * <pre>createTime:
+     * 7/11/19 9:58 PM</pre>
+     *
+     * @param spuId 商品(SPU) id
+     * @return 商品信息
+     */
+    @GetMapping("/spu/{id}")
+    public ResponseEntity<SpuDTO> querySpuBySpuId(@PathVariable("id") Long spuId) {
+        return ResponseEntity.ok(goodsService.querySpuBySpuId(spuId));
     }
 
     /**

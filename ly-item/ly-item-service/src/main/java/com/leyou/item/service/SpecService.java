@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by IntelliJ IDEA.
@@ -170,5 +172,36 @@ public class SpecService {
         if (1 != specParamMapper.deleteByPrimaryKey(pid)) {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
+    }
+
+    /**
+     * 查询规格参数组，及组内参数
+     * <pre>createTime:
+     * 7/11/19 10:16 PM</pre>
+     *
+     * @param cid 商品分类 id
+     * @return 规格组及组内参数
+     */
+    public List<SpecGroupDTO> querySpecListByCategoryId(Long cid) {
+
+        // 查询规格组
+        List<SpecGroupDTO> groupList = querySpecGroupListByCategoryId(cid);
+
+        // 查询分类下所有规格参数  查到当前分类下所有的规格参数
+        List<SpecParamDTO> params = querySpecParamsListByGroupIdOrCategoryId(null, cid, null);
+
+        // 将规格参数按照 groupId 进行分组，得到每个 group 下的 param 的集合
+
+        // map 的 key 就是分组条件，也是组 id，一个组内有多个值，所以搞了 list
+        Map<Long, List<SpecParamDTO>> paramMap = params
+                .stream()
+                .collect(Collectors.groupingBy(SpecParamDTO::getGroupId));
+
+
+        // 填写到 group 中
+        for (SpecGroupDTO groupDTO : groupList) {
+            groupDTO.setParams(paramMap.get(groupDTO.getId()));
+        }
+        return groupList;
     }
 }

@@ -41,6 +41,19 @@ public class SpecController {
     }
 
     /**
+     * 查询规格参数组，及组内参数
+     * <pre>createTime:
+     * 7/11/19 10:15 PM</pre>
+     *
+     * @param cid 商品分类 id
+     * @return 规格组及组内参数
+     */
+    @GetMapping("/of/category")
+    public ResponseEntity<List<SpecGroupDTO>> querySpecListByCategoryId(@RequestParam("id") Long cid) {
+        return ResponseEntity.ok(specService.querySpecListByCategoryId(cid));
+    }
+
+    /**
      * 新增规格组
      * <pre>createTime:
      * 7/2/19 7:15 PM</pre>

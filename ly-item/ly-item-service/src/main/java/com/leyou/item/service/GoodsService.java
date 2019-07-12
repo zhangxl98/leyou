@@ -201,6 +201,26 @@ public class GoodsService {
     }
 
     /**
+     * 返回商品信息
+     * <pre>createTime:
+     * 7/11/19 9:59 PM</pre>
+     *
+     * @param spuId 商品 id
+     * @return 商品信息
+     */
+    public SpuDTO querySpuBySpuId(Long spuId) {
+
+        // 查询
+        Spu spu = spuMapper.selectByPrimaryKey(spuId);
+
+        if (null == spu) {
+            throw new LyException(ExceptionEnum.SPU_NOT_FOND);
+        }
+
+        return BeanHelper.copyProperties(spu, SpuDTO.class);
+    }
+
+    /**
      * 返回商品 SKU 信息
      * <pre>createTime:
      * 7/3/19 7:51 PM</pre>

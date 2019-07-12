@@ -28,7 +28,8 @@ public enum ExceptionEnum {
     GOODS_NOT_FOND(204, "商品未找到"),
     INVALID_PARAM_ERROR(400, "请求参数有误"),
     SPU_DETAIL_NOT_FOND(204, "商品详情未找到"),
-    SKU_NOT_FOND(204, "商品 SKU 未找到");
+    SKU_NOT_FOND(204, "商品 SKU 未找到"),
+    SPU_NOT_FOND(204,"商品 SPU 未找到");
 
     private int status;
 

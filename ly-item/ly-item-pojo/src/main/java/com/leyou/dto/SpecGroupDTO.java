@@ -2,6 +2,8 @@ package com.leyou.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -29,4 +31,9 @@ public class SpecGroupDTO {
      * 规格组名称
      */
     private String name;
+
+    /**
+     * 组内的参数，查询规格组同时查询组内参数
+     */
+    private List<SpecParamDTO> params;
 }
