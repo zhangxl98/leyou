@@ -9,6 +9,11 @@ spring:
       cluster-name: leyou-elastic
       cluster-nodes: 127.0.0.1:9311
 
+  rabbitmq:
+    host: 127.0.0.1
+    virtual-host: /salary
+    username: leyou
+    password: leyou
 
 eureka:
   client:

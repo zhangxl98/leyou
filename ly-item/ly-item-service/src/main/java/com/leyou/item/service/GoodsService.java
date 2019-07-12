@@ -17,6 +17,7 @@ import com.leyou.item.pojo.Sku;
 import com.leyou.item.pojo.Spu;
 import com.leyou.item.pojo.SpuDetail;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,10 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.leyou.common.constants.MQConstants.Exchange.ITEM_EXCHANGE_NAME;
+import static com.leyou.common.constants.MQConstants.RoutingKey.ITEM_DOWN_KEY;
+import static com.leyou.common.constants.MQConstants.RoutingKey.ITEM_UP_KEY;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,6 +58,9 @@ public class GoodsService {
 
     @Autowired
     private BrandService brandService;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     /**
      * 返回分页数据
@@ -178,6 +186,10 @@ public class GoodsService {
                 throw new LyException(ExceptionEnum.UPDATE_OPERATION_FAIL);
             }
         }
+
+        // 发送mq消息
+        String key = saleable ? ITEM_UP_KEY : ITEM_DOWN_KEY;
+        amqpTemplate.convertAndSend(ITEM_EXCHANGE_NAME,key, id);
     }
 
     /**

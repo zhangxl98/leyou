@@ -8,6 +8,7 @@ import com.leyou.dto.SpuDTO;
 import com.leyou.dto.SpuDetailDTO;
 import com.leyou.item.client.ItemClient;
 import com.leyou.search.pojo.Goods;
+import com.leyou.search.repository.GoodsRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class IndexService {
 
     @Autowired
     private ItemClient itemClient;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
 
     /**
      * 把一个 SPU 转为一个 Goods 对象
@@ -192,5 +196,22 @@ public class IndexService {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public void createIndex(Long id) {
+
+        //spuId--->spuDTO---->goods---->saveGoods
+
+        SpuDTO spuDTO = this.itemClient.querySpuBySpuId(id);
+
+        Goods goods = buildGoods(spuDTO);
+
+        this.goodsRepository.save(goods);
+
+    }
+
+    public void deleteById(Long id) {
+
+        this.goodsRepository.deleteById(id);
     }
 }
