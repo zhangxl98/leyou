@@ -31,7 +31,8 @@ public enum ExceptionEnum {
     SKU_NOT_FOND(204, "商品 SKU 未找到"),
     SPU_NOT_FOND(204,"商品 SPU 未找到"),
     DIRECTORY_WRITER_ERROR(500,"目录未找到"),
-    FILE_WRITER_ERROR(500,"文件写入失败");
+    FILE_WRITER_ERROR(500,"文件写入失败"),
+    INTERNAL_SERVER_ERROR(500,"服务器内部异常");
 
     private int status;
 
