@@ -1,5 +1,6 @@
 package com.leyou.user.controller;
 
+import com.leyou.user.dto.UserDTO;
 import com.leyou.user.entity.User;
 import com.leyou.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,5 +70,22 @@ public class UserController {
     public ResponseEntity<Void> register(@Valid User user, @RequestParam("code") String code) {
         userService.register(user, code);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 用户登录
+     * <pre>createTime:
+     * 7/13/19 8:12 PM</pre>
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户数据
+     */
+    @GetMapping("/query")
+    public ResponseEntity<UserDTO> login(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password
+    ) {
+        return ResponseEntity.ok(userService.login(username, password));
     }
 }

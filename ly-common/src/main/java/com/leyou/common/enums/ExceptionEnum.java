@@ -33,7 +33,8 @@ public enum ExceptionEnum {
     DIRECTORY_WRITER_ERROR(500, "目录未找到"),
     FILE_WRITER_ERROR(500, "文件写入失败"),
     INTERNAL_SERVER_ERROR(500, "服务器内部异常"),
-    SEND_MESSAGE_ERROR(500, "短信发送失败");
+    SEND_MESSAGE_ERROR(500, "短信发送失败"),
+    INVALID_USERNAME_PASSWORD(400, "用户名或密码错误");
 
     private int status;
 

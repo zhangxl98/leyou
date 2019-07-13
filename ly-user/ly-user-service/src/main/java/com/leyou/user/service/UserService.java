@@ -2,11 +2,14 @@ package com.leyou.user.service;
 
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
+import com.leyou.common.utils.BeanHelper;
 import com.leyou.common.utils.NumberUtils;
 import com.leyou.common.utils.RegexUtils;
+import com.leyou.user.dto.UserDTO;
 import com.leyou.user.entity.User;
 import com.leyou.user.mapper.UserMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -156,5 +159,38 @@ public class UserService {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
 
+    }
+
+    /**
+     * 用户登录
+     * <pre>createTime:
+     * 7/13/19 8:19 PM</pre>
+     *
+     * @param username 用户名
+     * @param password 密码
+     * @return 用户数据
+     */
+    public UserDTO login(String username, String password) {
+
+        // 根据用户名查询用户
+        User user = userMapper.selectOne(User.builder().username(username).build());
+
+        // 用户是否存在
+        if (null == user) {
+            throw new LyException(ExceptionEnum.INVALID_USERNAME_PASSWORD);
+        }
+
+        // 校验密码
+        if (!bCryptPasswordEncoder.matches(password, user.getPassword())) {
+            throw new LyException(ExceptionEnum.INVALID_USERNAME_PASSWORD);
+        }
+
+        // 返回用户数据
+        return UserDTO.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .phone(user.getPhone())
+                .created(user.getCreateTime().getTime())
+                .build();
     }
 }
