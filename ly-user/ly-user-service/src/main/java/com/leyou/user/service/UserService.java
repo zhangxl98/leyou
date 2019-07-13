@@ -134,12 +134,6 @@ public class UserService {
      */
     public void register(User user, String code) {
 
-
-        // 校验手机号、用户名、密码是否符合规范
-        if (!RegexUtils.isPhone(user.getPhone()) || !RegexUtils.isUserName(user.getUsername()) || !RegexUtils.isPassword(user.getPassword())) {
-            throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
-        }
-
         // 校验验证码
         String storeCode = redisTemplate.opsForValue().get(KEY_PREFIX + user.getPhone());
 

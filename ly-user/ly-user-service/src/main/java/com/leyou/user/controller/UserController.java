@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 /**
  * Created by IntelliJ IDEA.
  *
@@ -64,7 +66,7 @@ public class UserController {
      * @return 201：注册成功；400：参数有误，注册失败；500：服务器内部异常，注册失败
      */
     @PostMapping("/register")
-    public ResponseEntity<Void> register(User user, @RequestParam("code") String code) {
+    public ResponseEntity<Void> register(@Valid User user, @RequestParam("code") String code) {
         userService.register(user, code);
         return ResponseEntity.ok().build();
     }
