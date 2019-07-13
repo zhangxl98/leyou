@@ -1,5 +1,6 @@
 package com.leyou.user.controller;
 
+import com.leyou.user.entity.User;
 import com.leyou.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,5 +52,20 @@ public class UserController {
     public ResponseEntity<Void> sendVerifyCode(@RequestParam("phone") String phone) {
         userService.sendVerifyCode(phone);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 用户注册
+     * <pre>createTime:
+     * 7/13/19 7:06 PM</pre>
+     *
+     * @param user username，password，phone
+     * @param code 短信验证码
+     * @return 201：注册成功；400：参数有误，注册失败；500：服务器内部异常，注册失败
+     */
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(User user, @RequestParam("code") String code) {
+        userService.register(user, code);
+        return ResponseEntity.ok().build();
     }
 }

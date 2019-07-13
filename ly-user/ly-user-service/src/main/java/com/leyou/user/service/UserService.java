@@ -7,10 +7,10 @@ import com.leyou.common.utils.RegexUtils;
 import com.leyou.user.entity.User;
 import com.leyou.user.mapper.UserMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -46,6 +46,9 @@ public class UserService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * 实现用户数据的校验，主要包括对：手机号、用户名的唯一性校验
@@ -119,5 +122,45 @@ public class UserService {
         } catch (Exception e) {
             throw new LyException(ExceptionEnum.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * 用户注册
+     * <pre>createTime:
+     * 7/13/19 7:07 PM</pre>
+     *
+     * @param user 用户名，格式为4~30位字母、数字、下划线；用户密码，格式为4~30位字母、数字、下划线；手机号码
+     * @param code 短信验证码
+     */
+    public void register(User user, String code) {
+
+
+        // 校验手机号、用户名、密码是否符合规范
+        if (!RegexUtils.isPhone(user.getPhone()) || !RegexUtils.isUserName(user.getUsername()) || !RegexUtils.isPassword(user.getPassword())) {
+            throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
+        }
+
+        // 校验验证码
+        String storeCode = redisTemplate.opsForValue().get(KEY_PREFIX + user.getPhone());
+
+        if (!code.equals(storeCode)) {
+            throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
+        }
+
+        // 加密密码
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
+        // 保存用户
+        if (1 != userMapper.insertSelective(user)) {
+            throw new LyException(ExceptionEnum.INSERT_OPERATION_FAIL);
+        }
+
+        try {
+            // 删除缓存中的验证码
+            redisTemplate.delete(KEY_PREFIX + user.getPhone());
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
+        }
+
     }
 }

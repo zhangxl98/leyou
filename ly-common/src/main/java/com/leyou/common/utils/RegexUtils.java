@@ -25,6 +25,30 @@ public class RegexUtils {
         return matches(email, RegexPatterns.EMAIL_REGEX);
     }
 
+    /**
+     * 是否符合用户名格式
+     * <pre>createTime:
+     * 7/13/19 7:17 PM</pre>
+     *
+     * @param userName 要校验的用户名
+     * @return true:符合，false：不符合
+     */
+    public static boolean isUserName(String userName) {
+        return matches(userName, RegexPatterns.USERNAME_REGEX);
+    }
+
+    /**
+     * 是否符合密码格式
+     * <pre>createTime:
+     * 7/13/19 7:25 PM</pre>
+     *
+     * @param userName 要校验的密码
+     * @return true:符合，false：不符合
+     */
+    public static boolean isPassword(String userName) {
+        return matches(userName, RegexPatterns.PASSWORD_REGEX);
+    }
+
     private static boolean matches(String str, String regex) {
         if (StringUtils.isBlank(str)) {
             return false;
