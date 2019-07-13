@@ -2,11 +2,19 @@ package com.leyou.user.service;
 
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
+import com.leyou.common.utils.NumberUtils;
 import com.leyou.user.entity.User;
 import com.leyou.user.mapper.UserMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.leyou.common.constants.MQConstants.Exchange.SMS_EXCHANGE_NAME;
+import static com.leyou.common.constants.MQConstants.RoutingKey.VERIFY_CODE_KEY;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,6 +31,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     /**
      * 实现用户数据的校验，主要包括对：手机号、用户名的唯一性校验
@@ -60,5 +71,25 @@ public class UserService {
             throw new LyException(ExceptionEnum.INTERNAL_SERVER_ERROR);
         }
         return 1 != count;
+    }
+
+    /**
+     * 发送短信验证码
+     * <pre>createTime:
+     * 7/13/19 3:06 PM</pre>
+     *
+     * @param phone 手机号
+     */
+    public void sendVerifyCode(String phone) {
+
+        Map<String, String> msg = new HashMap<>(16);
+
+        msg.put("phone",phone);
+
+        String code = NumberUtils.generateCode(6);
+
+        msg.put("code",code);
+
+        amqpTemplate.convertAndSend(SMS_EXCHANGE_NAME,VERIFY_CODE_KEY,msg);
     }
 }

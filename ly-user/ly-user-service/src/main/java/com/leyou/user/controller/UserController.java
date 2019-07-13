@@ -2,10 +2,9 @@ package com.leyou.user.controller;
 
 import com.leyou.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,5 +37,19 @@ public class UserController {
             @PathVariable Integer type
     ) {
         return ResponseEntity.ok(userService.check(data, type));
+    }
+
+    /**
+     * 发送短信验证码
+     * <pre>createTime:
+     * 7/13/19 3:05 PM</pre>
+     *
+     * @param phone 手机号
+     * @return 204：请求已接收；400：参数有误；500：服务器内部异常
+     */
+    @PostMapping("/code")
+    public ResponseEntity<Void> sendVerifyCode(@RequestParam("phone") String phone) {
+        userService.sendVerifyCode(phone);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

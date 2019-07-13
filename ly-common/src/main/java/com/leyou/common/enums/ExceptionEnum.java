@@ -29,10 +29,11 @@ public enum ExceptionEnum {
     INVALID_PARAM_ERROR(400, "请求参数有误"),
     SPU_DETAIL_NOT_FOND(204, "商品详情未找到"),
     SKU_NOT_FOND(204, "商品 SKU 未找到"),
-    SPU_NOT_FOND(204,"商品 SPU 未找到"),
-    DIRECTORY_WRITER_ERROR(500,"目录未找到"),
-    FILE_WRITER_ERROR(500,"文件写入失败"),
-    INTERNAL_SERVER_ERROR(500,"服务器内部异常");
+    SPU_NOT_FOND(204, "商品 SPU 未找到"),
+    DIRECTORY_WRITER_ERROR(500, "目录未找到"),
+    FILE_WRITER_ERROR(500, "文件写入失败"),
+    INTERNAL_SERVER_ERROR(500, "服务器内部异常"),
+    SEND_MESSAGE_ERROR(500, "短信发送失败");
 
     private int status;
 
