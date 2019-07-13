@@ -3,15 +3,19 @@ package com.leyou.user.service;
 import com.leyou.common.enums.ExceptionEnum;
 import com.leyou.common.exception.LyException;
 import com.leyou.common.utils.NumberUtils;
+import com.leyou.common.utils.RegexUtils;
 import com.leyou.user.entity.User;
 import com.leyou.user.mapper.UserMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.leyou.common.constants.MQConstants.Exchange.SMS_EXCHANGE_NAME;
 import static com.leyou.common.constants.MQConstants.RoutingKey.VERIFY_CODE_KEY;
@@ -29,11 +33,19 @@ import static com.leyou.common.constants.MQConstants.RoutingKey.VERIFY_CODE_KEY;
 @Service
 public class UserService {
 
+    /**
+     * 验证码存入 redis 的前缀
+     */
+    public static final String KEY_PREFIX = "user:code:phone:";
+
     @Autowired
     private UserMapper userMapper;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     /**
      * 实现用户数据的校验，主要包括对：手机号、用户名的唯一性校验
@@ -82,14 +94,30 @@ public class UserService {
      */
     public void sendVerifyCode(String phone) {
 
-        Map<String, String> msg = new HashMap<>(16);
+        try {
+            // 对传入的手机号进行校验
+            if (!RegexUtils.isPhone(phone)) {
+                throw new LyException(ExceptionEnum.INVALID_PARAM_ERROR);
+            }
 
-        msg.put("phone",phone);
+            Map<String, String> msg = new HashMap<>(16);
 
-        String code = NumberUtils.generateCode(6);
+            msg.put("phone", phone);
 
-        msg.put("code",code);
+            // 生成验证码
+            String code = NumberUtils.generateCode(6);
 
-        amqpTemplate.convertAndSend(SMS_EXCHANGE_NAME,VERIFY_CODE_KEY,msg);
+            msg.put("code", code);
+
+
+            // 将验证码发送到消息中间件
+            amqpTemplate.convertAndSend(SMS_EXCHANGE_NAME, VERIFY_CODE_KEY, msg);
+
+            // 将验证码存入 redis 中，并设置时间为 5 分钟
+            redisTemplate.opsForValue().set(KEY_PREFIX + phone, code, 5, TimeUnit.MINUTES);
+
+        } catch (Exception e) {
+            throw new LyException(ExceptionEnum.INTERNAL_SERVER_ERROR);
+        }
     }
 }
