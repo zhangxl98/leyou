@@ -1,6 +1,7 @@
 package com.leyou.common.auth.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
  * @Description 载荷：用户信息
  */
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfo {

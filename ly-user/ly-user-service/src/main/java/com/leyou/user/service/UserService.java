@@ -170,7 +170,7 @@ public class UserService {
      * @param password 密码
      * @return 用户数据
      */
-    public UserDTO login(String username, String password) {
+    public UserDTO queryByUsernameAndPassword(String username, String password) {
 
         // 根据用户名查询用户
         User user = userMapper.selectOne(User.builder().username(username).build());

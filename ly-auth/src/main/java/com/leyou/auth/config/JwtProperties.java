@@ -34,8 +34,32 @@ public class JwtProperties implements InitializingBean {
      */
     private String priKeyPath;
 
+    /**
+     * 用户 token 相关属性
+     */
+    private UserTokenProperties user = new UserTokenProperties();
+
     private PublicKey publicKey;
     private PrivateKey privateKey;
+
+    @Data
+    public class UserTokenProperties {
+
+        /**
+         * token 过期时长
+         */
+        private int expire;
+
+        /**
+         * 存放 token 的 cookie 名称
+         */
+        private String cookieName;
+
+        /**
+         * 存放 token 的 cookie 的 domain
+         */
+        private String cookieDomain;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

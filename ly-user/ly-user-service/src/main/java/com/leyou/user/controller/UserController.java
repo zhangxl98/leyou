@@ -82,7 +82,7 @@ public class UserController {
     }
 
     /**
-     * 用户登录
+     * 根据用户名和密码查询用户-用户登录
      * <pre>createTime:
      * 7/13/19 8:12 PM</pre>
      *
@@ -91,10 +91,10 @@ public class UserController {
      * @return 用户数据
      */
     @GetMapping("/query")
-    public ResponseEntity<UserDTO> login(
+    public ResponseEntity<UserDTO> queryByUsernameAndPassword(
             @RequestParam("username") String username,
             @RequestParam("password") String password
     ) {
-        return ResponseEntity.ok(userService.login(username, password));
+        return ResponseEntity.ok(userService.queryByUsernameAndPassword(username, password));
     }
 }
