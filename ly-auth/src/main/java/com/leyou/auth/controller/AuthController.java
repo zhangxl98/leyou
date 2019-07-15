@@ -1,13 +1,16 @@
 package com.leyou.auth.controller;
 
 import com.leyou.auth.service.AuthService;
+import com.leyou.common.auth.entity.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -33,15 +36,43 @@ public class AuthController {
      *
      * @param username 用户名
      * @param password 密码
-     * @param response response 对象
+     * @param resp     response 对象
      */
     @PostMapping("/login")
     public ResponseEntity<Void> login(
             @RequestParam("username") String username,
             @RequestParam("password") String password,
-            HttpServletResponse response
+            HttpServletResponse resp
     ) {
-        authService.login(username, password, response);
+        authService.login(username, password, resp);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    /**
+     * 验证用户信息
+     * <pre>createTime:
+     * 7/15/19 9:05 PM</pre>
+     *
+     * @param req  请求
+     * @param resp 响应
+     * @return 用户信息
+     */
+    @GetMapping("verify")
+    public ResponseEntity<UserInfo> verifyUser(HttpServletRequest req, HttpServletResponse resp) {
+        return ResponseEntity.ok(authService.verifyUser(req, resp));
+    }
+
+    /**
+     * 用户注销
+     * <pre>createTime:
+     * 7/15/19 9:21 PM</pre>
+     *
+     * @param req  请求
+     * @param resp 响应
+     */
+    @PostMapping("logout")
+    public ResponseEntity<Void> logout(HttpServletRequest req, HttpServletResponse resp) {
+        authService.logout(req, resp);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

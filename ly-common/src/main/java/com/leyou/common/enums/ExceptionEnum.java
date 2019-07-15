@@ -35,7 +35,8 @@ public enum ExceptionEnum {
     INTERNAL_SERVER_ERROR(500, "服务器内部异常"),
     SEND_MESSAGE_ERROR(500, "短信发送失败"),
     INVALID_USERNAME_PASSWORD(400, "用户名或密码错误"),
-    USER_NOT_FOUND(401, "用户未找到");
+    USER_NOT_FOUND(401, "用户未找到"),
+    VERIFY_FAIL(403, "非法用户，禁止访问");
 
     private int status;
 
