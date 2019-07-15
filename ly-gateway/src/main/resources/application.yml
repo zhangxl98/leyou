@@ -16,6 +16,7 @@ zuul:
     upload-service: /upload/**
     search-service: /search/**
     user-service: /user/**
+    auth-service: /auth/**
 hystrix:
   command:
     default:
