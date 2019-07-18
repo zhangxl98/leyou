@@ -69,3 +69,17 @@ ly:
     maxAge: 3600
     # 拦截路径
     filterPath: "/**"
+
+  jwt:
+    pubKeyPath: /home/public/leyou/rsa/id_rsa.pub # 公钥地址
+    user:
+      cookieName: LY_TOKEN # cookie名称
+
+  filter:
+    allowPaths:
+      - /api/auth/login
+      - /api/search
+      - /api/user/register
+      - /api/user/check
+      - /api/user/code
+      - /api/item
