@@ -1,6 +1,9 @@
 package com.leyou.auth.service;
 
 import com.leyou.auth.config.JwtProperties;
+import com.leyou.auth.entity.ApplicationInfo;
+import com.leyou.auth.mapper.ApplicationInfoMapper;
+import com.leyou.common.auth.entity.AppInfo;
 import com.leyou.common.auth.entity.Payload;
 import com.leyou.common.auth.entity.UserInfo;
 import com.leyou.common.auth.utils.JwtUtils;
@@ -12,12 +15,14 @@ import com.leyou.user.client.UserClient;
 import com.leyou.user.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,6 +46,12 @@ public class AuthService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private ApplicationInfoMapper applicationInfoMapper;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     private static final String USER_ROLE = "guest";
 
@@ -165,5 +176,44 @@ public class AuthService {
                 .httpOnly(true)
                 .maxAge(jwtProperties.getUser().getExpire() * 60)
                 .build();
+    }
+
+    /**
+     * 微服务认证并申请令牌
+     * <pre>createTime:
+     * 7/21/19 3:22 PM</pre>
+     *
+     * @param id     服务id
+     * @param secret 密码
+     * @return token
+     */
+    public String authenticate(Long id, String secret) {
+
+        // 校验 id 和 secret
+        ApplicationInfo applicationInfo = applicationInfoMapper.selectByPrimaryKey(id);
+        // 判断是否为空
+        if (applicationInfo == null) {
+            // id不存在，抛出异常
+            throw new LyException(ExceptionEnum.INVALID_SERVER_ID_SECRET);
+        }
+        // 验密
+        if (!bCryptPasswordEncoder.matches(secret, applicationInfo.getSecret())) {
+            // 密码错误
+            throw new LyException(ExceptionEnum.INVALID_SERVER_ID_SECRET);
+        }
+
+        // 查询服务权限信息
+        List<Long> idList = applicationInfoMapper.queryTargetIdList(id);
+
+        // 封装 AppInfo 载荷
+        AppInfo appInfo = AppInfo.builder()
+                .id(id)
+                .serviceName(applicationInfo.getServiceName())
+                .targetList(idList)
+                .build();
+
+        // 生成 token，并返回
+        return JwtUtils.generateTokenExpireInMinutes(
+                appInfo, jwtProperties.getPrivateKey(), jwtProperties.getApp().getExpire());
     }
 }

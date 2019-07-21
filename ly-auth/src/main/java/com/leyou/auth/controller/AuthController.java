@@ -75,4 +75,18 @@ public class AuthController {
         authService.logout(req, resp);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 微服务认证并申请令牌
+     * <pre>createTime:
+     * 7/21/19 3:19 PM</pre>
+     *
+     * @param id     服务id
+     * @param secret 密码
+     * @return token
+     */
+    @GetMapping("/authorization")
+    public ResponseEntity<String> authorize(@RequestParam("id") Long id, @RequestParam("secret") String secret) {
+        return ResponseEntity.ok(authService.authenticate(id, secret));
+    }
 }

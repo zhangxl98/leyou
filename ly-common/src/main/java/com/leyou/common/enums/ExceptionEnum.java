@@ -36,7 +36,8 @@ public enum ExceptionEnum {
     SEND_MESSAGE_ERROR(500, "短信发送失败"),
     INVALID_USERNAME_PASSWORD(400, "用户名或密码错误"),
     USER_NOT_FOUND(401, "用户未找到"),
-    VERIFY_FAIL(403, "非法用户，禁止访问");
+    VERIFY_FAIL(403, "非法用户，禁止访问"),
+    INVALID_SERVER_ID_SECRET(400, "服务 id 与 secret 不匹配");
 
     private int status;
 
