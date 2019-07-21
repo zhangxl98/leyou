@@ -33,6 +33,11 @@ public class JwtProperties implements InitializingBean {
      */
     private UserTokenProperties user = new UserTokenProperties();
 
+    /**
+     * 服务 token 相关属性
+     */
+    private AppTokenInfo app = new AppTokenInfo();
+
     private PublicKey publicKey;
 
     @Data
@@ -42,6 +47,14 @@ public class JwtProperties implements InitializingBean {
          * 存放 token 的 cookie 名称
          */
         private String cookieName;
+    }
+
+    @Data
+    public class AppTokenInfo{
+
+        private Long id;
+        private String secret;
+        private String headerName;
     }
 
     @Override
