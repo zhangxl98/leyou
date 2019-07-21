@@ -41,7 +41,10 @@ ly:
       cookieName: LY_TOKEN # cookie名称
       cookieDomain: leyou.com # cookie的域
     app:
+      id: 10 # 服务id
       expire: 1500 # 服务认证过期时间,单位分钟
+      secret: ${spring.application.name} # 服务密钥，默认是服务的名称
+      headerName: privilege_header
 
   encoder:
     crypt:

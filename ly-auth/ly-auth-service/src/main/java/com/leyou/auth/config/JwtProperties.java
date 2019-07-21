@@ -73,6 +73,22 @@ public class JwtProperties implements InitializingBean {
          * token 过期时长
          */
         private int expire;
+
+        /**
+         * 服务 id
+         */
+        private Long id;
+
+        /**
+         * 服务密码
+         */
+        private String secret;
+
+        /**
+         * 头信息
+         */
+        private String headerName;
+
     }
 
     @Override
