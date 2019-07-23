@@ -334,7 +334,7 @@
         // 查询购物车
         this.isLogin().then(() => {
           // 判断本地未登录购物车是否存在，
-          /*const carts = ly.store.get("carts") || [];
+          const carts = ly.store.get("carts") || [];
           if (carts.length > 0) {
             // 如果存在，发到后台，添加到redis，删除本地购物车
             ly.http.post("/cart/list", carts).then(() => {
@@ -348,7 +348,7 @@
           } else {
             // 查询购物车
             this.handleLoginCarts();
-          }*/
+          }
 		  // 查询购物车
 		  this.handleLoginCarts();
         }).catch(() => {
@@ -374,6 +374,10 @@
         })
       },
       increment(c) {
+        if (!c.enable){
+          return;
+        }
+
         if (c.num >= c.stock) {
           alert("超出库存上限");
           return;
@@ -396,6 +400,10 @@
         })
       },
       decrement(c) {
+        if (!c.enable){
+          return;
+        }
+
         if (c.num <= 1) return;
         c.num--;
         this.isLogin().then(() => {

@@ -147,4 +147,18 @@ public class GoodsController {
         goodsService.deleteGoods(spuId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
+    /**
+     * 批量查询商品 sku
+     * <pre>createTime:
+     * 7/23/19 9:20 AM</pre>
+     *
+     * @param ids 多个 sku id
+     * @return sku 集合
+     */
+    @GetMapping("sku/list")
+    public ResponseEntity<List<SkuDTO>> querySkuListByIds(@RequestParam("ids") List<Long> ids) {
+
+        return ResponseEntity.ok(this.goodsService.querySkuListByIds(ids));
+    }
 }

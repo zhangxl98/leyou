@@ -189,7 +189,7 @@ public class GoodsService {
 
         // 发送mq消息
         String key = saleable ? ITEM_UP_KEY : ITEM_DOWN_KEY;
-        amqpTemplate.convertAndSend(ITEM_EXCHANGE_NAME,key, id);
+        amqpTemplate.convertAndSend(ITEM_EXCHANGE_NAME, key, id);
     }
 
     /**
@@ -328,5 +328,24 @@ public class GoodsService {
         if (count != skuMapper.deleteByExample(example)) {
             throw new LyException(ExceptionEnum.DELETE_OPERATION_FAIL);
         }
+    }
+
+    /**
+     * 批量查询商品 sku
+     * <pre>createTime:
+     * 7/23/19 9:22 AM</pre>
+     *
+     * @param ids 多个 sku id
+     * @return sku 集合
+     */
+    public List<SkuDTO> querySkuListByIds(List<Long> ids) {
+
+        List<Sku> skuList = this.skuMapper.selectByIdList(ids);
+
+        if (CollectionUtils.isEmpty(skuList)) {
+            throw new LyException(ExceptionEnum.GOODS_NOT_FOND);
+        }
+
+        return BeanHelper.copyWithCollection(skuList, SkuDTO.class);
     }
 }
